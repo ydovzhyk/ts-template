@@ -1,0 +1,126 @@
+@use '../../../styles/mixins';
+
+.form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 240px;
+  @include mixins.mq(tablet) {
+    width: 320px;
+  }
+}
+
+.wrap {
+  margin: auto;
+  margin-top: -20px;
+}
+
+.imgDesktop {
+  display: none;
+
+  @include mixins.mq(desktop) {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1280px;
+    z-index: -1;
+  }
+}
+
+.auth {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  background-image: url(../../../images/Auth/bg-register.jpg);
+  background-size: cover;
+  height: 100vh;
+
+  @include mixins.mq(tablet) {
+    background-repeat: no-repeat;
+  }
+}
+
+.box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  margin: 0 auto;
+  background: var(--main-color);
+  box-shadow: 10px 10px 30px rgba(82, 85, 95, 0.4);
+  border-radius: 30px;
+  z-index: 1200;
+  @include mixins.mq(tablet) {
+    padding: 40px;
+    width: 460px;
+  }
+
+  @include mixins.mq(desktop) {
+    width: 460px;
+  }
+}
+
+.linksWrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin-bottom: 50px;
+
+  @include mixins.mq(tablet) {
+    margin-bottom: 60px;
+  }
+}
+
+.title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--title-text-color);
+  text-align: center;
+
+  @include mixins.mq(tablet) {
+    text-align: left;
+  }
+}
+
+.authLink {
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  &::before {
+    content: '';
+    background: var(--title-text-color);
+    display: block;
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.authLink:hover::before {
+  width: 100%;
+}
+
+.activeLink {
+  &::before {
+    width: 100%;
+  }
+}
+
+.linkHome {
+  display: inline-block;
+  text-align: center;
+  text-decoration: underline;
+  font-size: 14px;
+  margin-top: 16px;
+  color: var(--second-text-color);
+}

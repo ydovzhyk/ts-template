@@ -1,0 +1,35 @@
+@use '../../../styles/mixins';
+
+.textError {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-color);
+}
+
+.textMessage {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-color);
+}
+
+.title {
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--accent-color);
+  margin-bottom: 15px;
+  margin-top: 15px;
+  @include mixins.mq(tablet) {
+    font-size: 24px;
+    // color: aqua;
+    color: var(--accent-color);
+  }
+}
+
+.titleGroupItems {
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--text-color);
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+}
