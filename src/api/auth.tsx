@@ -18,10 +18,84 @@ const token = {
   },
 };
 
+async function getAuthDataFromLocalStorage() {
+  const dataFromLocalStorage = localStorage.getItem('ts-template.authData');
+  if (dataFromLocalStorage) {
+    return JSON.parse(dataFromLocalStorage);
+  }
+  return null;
+}
+
+instance.interceptors.response.use(
+  response => response,
+  async error => {
+    if (
+      error.response.status === 401 &&
+      error.response.data.message === 'Unauthorized') {
+      try {
+        const authData = await getAuthDataFromLocalStorage();
+        if (authData) {
+          const { refreshToken, sid } = authData;
+          token.set(refreshToken);
+          const { data } = await instance.post('/auth/refresh', { sid });
+          token.unset();
+
+          const authNewData = {
+            accessToken: data.newAccessToken,
+            refreshToken: data.newRefreshToken,
+            sid: data.sid,
+          };
+
+          await localStorage.setItem('ts-template.authData', JSON.stringify(authNewData));
+        } else {
+          return;
+        }
+
+        if (error.config.url === '/auth/current') {
+          const authData = await getAuthDataFromLocalStorage();
+          if (authData) {
+            const { accessToken, refreshToken, sid } = authData;
+            const originalRequest = error.config;
+            originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+            originalRequest.data = {
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              sid: sid,
+            };
+            return instance(originalRequest);
+          } else {
+            return;
+          }
+        } else {
+          const authData = await getAuthDataFromLocalStorage();
+          if (authData) {
+            const { accessToken } = authData;
+            const originalRequest = error.config;
+            originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+            return instance(originalRequest);
+          } else {
+            return;
+          }
+        }
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    } else if (error.response.status === 401 && error.response.data.message === 'Refresh end') {
+      const authData = {
+        accessToken: null,
+        refreshToken: null,
+        sid: null,
+      };
+      localStorage.setItem('easy-shop.authData', JSON.stringify(authData));
+      return;
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
+
 export const axiosRegister = async (userData: IUserDataRegister): Promise<IRegistrationResponse> => {
-  console.log('Це інформація на сервер', userData);
   const { data }: { data: IRegistrationResponse } = await instance.post('/auth/register', userData);
-  console.log('Відповідь з сервера', data);
   return data;
 };
 

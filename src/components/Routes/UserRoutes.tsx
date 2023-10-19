@@ -11,7 +11,7 @@ const Login = lazy(() => import('../../components/Auth/Login/Login')); // Імп
 const Register = lazy(() => import('../../components/Auth/Register/Register')); 
 // const CreateTaskPage = lazy(() => import('pages/CreateTaskPage'));
 
-const UserRoutes = () => {
+const UserRoutes: React.FC = () => {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>

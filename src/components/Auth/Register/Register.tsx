@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../../hooks/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { register } from '../../../Redux/auth/auth-operations';
-import { NavLink, Navigate, Link } from 'react-router-dom';
+import { NavLink, Navigate, Link, useLocation } from 'react-router-dom';
 import { getAuthError, getUser } from './../../../Redux/auth/auth-selectors';
 import { clearUserError } from './../../../Redux/auth/auth-slice';
 
@@ -11,11 +11,13 @@ import { IUserDataRegister } from '../../types/auth/auth';
 
 import { fields } from '../../Shared/TextField/fields';
 import TextField from '../../Shared/TextField/TextField';
+import Text from '../../Shared/Text';
 import Button from '../../Shared/Button/Button';
 import Container from '../../Shared/Container/Container';
 import ErrorMessage from '../../Shared/ErrorMessage/ErrorMessage';
 
 import avatarImage from '../../../images/Avatar/avatar.svg';
+import { FcGoogle } from 'react-icons/fc';
 
 import s from './Register.module.scss';
 
@@ -24,7 +26,23 @@ const Register: React.FC  = () => {
     const user = useSelector(getUser);
     const newUserId = user.id
     const dispatch = useAppDispatch();
+    const location = useLocation();
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
+
+    const googleText =
+    location.pathname === '/auth/login'
+        ? 'Увійти швидко з Google'
+            : 'Зареєструватись швидко з Google';
+    
+    const versionApp = () => {
+        if (process.env.NODE_ENV === 'production') {
+            return 'https://ts-template-backend.herokuapp.com';
+        }
+        if (process.env.NODE_ENV === 'development') {
+            return 'http://localhost:4000';
+        }
+    }
+    
 
     useEffect(() => {
         const loadImage = async () => {
@@ -69,7 +87,7 @@ const Register: React.FC  = () => {
     };
 
     if (!errorRegister && newUserId) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/auth/login" />;
     }
 
     const resetError = () => {
@@ -88,6 +106,11 @@ const Register: React.FC  = () => {
                             <h2 className={s.title}>Реєстрація</h2>
                         </NavLink>
                     </div>
+                    <Text textClass="google-text" text={googleText} />
+                    <a href={`${versionApp()}/google`} className={s.googleBtn}>
+                        <FcGoogle size={24} />
+                        Google
+                    </a>
                     <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
                         <Controller
                             control={control}

@@ -50,6 +50,7 @@ export const logout = createAsyncThunk(
         const authData = JSON.parse(authDataJSON);
         const accessToken: IToken = authData.accessToken;
         const data: ILogoutResponse = await axiosLogout(accessToken);
+        localStorage.removeItem('ts-template.authData');
         return data;
       }
     } catch (error: any) {
@@ -69,6 +70,7 @@ export const getCurrentUser = createAsyncThunk(
       const accessToken: IToken = authData.accessToken;
       const userData: IAuth = authData;
       const data: ILoginResponse = await axiosGetCurrentUser(userData, accessToken);
+      console.log(data)
       return data;
     } catch (error: any) {
         const { data, status } = error.response || {};

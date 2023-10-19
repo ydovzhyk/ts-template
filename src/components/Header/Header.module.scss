@@ -2,7 +2,7 @@
 
 .header {
   width: 100%;
-  background-color: var(--btn-border-color);
+  background-color: var(--bg-footer-header);
   border: 2px solid red;
   z-index: 999;
   padding-top: 10px;
@@ -16,7 +16,6 @@
   width: 100%;
   max-width: 1280px;
   margin: 0 auto 0px auto;
-  border: 2px solid blue;
 }
 
 .group {
@@ -26,10 +25,47 @@
   justify-content: space-between;
 }
 
-.pagesList {
+.navigationMenuWrapper {
   display: flex;
-  flex-direction: row;
+  align-items: center;
 }
-.pagesList :last-child {
-  margin-left: 20px;
+
+.link {
+  display: inline-block;
+  position: relative;
+  color: var(--second-text-color);
+  transition: all var(--transition-duration) var(--timing-function);
+  &:not(:last-of-type) {
+    margin-right: 15px;
+  }
+  font-size: 14px;
+  @include mixins.mq(tablet) {
+    font-size: 16px;
+  }
+  &::before {
+    content: '';
+    background: var(--title-text-color);
+    display: block;
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    transition: all 0.3s ease-in-out;
+  }
+  &:hover {
+    color: var(--hover-active-color);
+    &::before {
+      width: 100%;
+    }
+  }
+}
+
+.active {
+  @extend .link;
+  color: var(--hover-active-color);
+}
+
+.lastLink {
+  margin-left: 15px;
 }
