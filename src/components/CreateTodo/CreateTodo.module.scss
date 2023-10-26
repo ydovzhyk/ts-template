@@ -1,0 +1,43 @@
+@use '../../styles/mixins';
+
+.createTodo {
+  padding-bottom: 80px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url(../../images/Auth/bg-register.jpg);
+  background-size: cover;
+  height: 100vh;
+  @include mixins.mq(tablet) {
+    background-repeat: no-repeat;
+  }
+}
+
+.textarea {
+  width: 350px;
+  font-weight: 400;
+  padding-left: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--second-text-color);
+  background-color: var(--background-color);
+  border-color: var(--border-color);
+  &:focus {
+    border-color: black;
+  }
+}
+
+.addUserGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.addUser {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+}

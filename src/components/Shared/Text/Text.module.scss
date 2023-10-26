@@ -40,3 +40,34 @@
   color: var(--text-color);
   margin-bottom: 12px;
 }
+
+.catalogTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--title-text-color);
+  background-color: var(--bg-footer-header);
+
+  @include mixins.mq(tablet) {
+    padding-bottom: 20px;
+    font-size: 16px;
+  }
+}
+
+.title-form {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--main-color);
+  @include mixins.mq(tablet) {
+    width: 300px;
+  }
+}

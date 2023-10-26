@@ -25,4 +25,20 @@ export const fields = {
     title: '*The Password field must be more than 2 and less than 21 characters',
     required: true,
   } as ITextFieldProps,
+  subject: {
+    label: 'Subject',
+    name: 'subject',
+    type: 'text',
+    placeholder: '',
+    title: '*The Subject field must be more than 2 characters',
+    required: true,
+  } as ITextFieldProps,
+  search: {
+    label: 'Search',
+    name: 'search',
+    type: 'text',
+    placeholder: 'Введіть email для пошуку',
+    title: '*The Subject field must be more than 2 characters',
+    required: false,
+  } as ITextFieldProps,
 };

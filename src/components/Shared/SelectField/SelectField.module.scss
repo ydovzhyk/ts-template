@@ -1,0 +1,44 @@
+@use '../../../styles/mixins';
+
+.label {
+  position: relative;
+  display: inline-block;
+  height: 48px;
+}
+
+.select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  margin-bottom: 40px;
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--second-text-color);
+  box-shadow: none;
+  border-radius: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  @include mixins.mq(tablet) {
+    width: 240px;
+  }
+}
+
+.label.createTodo {
+  position: relative;
+  display: inline-block;
+  height: 48px;
+}
+
+.select.createTodo {
+  margin-bottom: 0px;
+  @include mixins.mq(tablet) {
+    width: 350px;
+  }
+}
