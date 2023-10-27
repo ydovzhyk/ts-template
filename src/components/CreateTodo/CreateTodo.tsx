@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import moment, { Moment } from 'moment';
 import Container from '../Shared/Container';
 import Calendar from '../Shared/Calendar';
 import SelectField from '../Shared/SelectField';
@@ -10,6 +11,8 @@ import UserList from './UserList';
 import { fields } from '../Shared/TextField/fields'
 import { ITodoCreate } from '../types/todo/todo';
 import { FaPlus } from 'react-icons/fa';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import s from './CreateTodo.module.scss'
 
@@ -19,17 +22,58 @@ const options = [
     { value: 'Option 3', label: 'Option 3' }
 ];
 
-const arrayUser = ['ydovzhyk@getMaxListeners.com', 'katerynagrosul@getMaxListeners.com', 'morgan7up@gmail.com'];
+const arrayUser = ['todotodo@gmail.com','tttest@gmail.com','create@gmail.com','test@gmail.com','testtodo@gmail.com', 'ydovzhyk@gmail.com','ydovzhyk@getMaxListeners.com', 'katerynagrosul@getMaxListeners.com', 'morgan7up@gmail.com'];
 const CreateTodo: React.FC = () => {
     const [showUsersList, setShowUsersList] = useState<boolean>(false);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+    const [previewData, setPreviewData] = useState([]);
+    const [selectedDateFrom, setSelectedDateFrom] = useState<Moment>(moment(new Date));
+    const [selectedDateTo, setSelectedDateTo] = useState<Moment>(moment(new Date));
+
+    console.log('previewData', previewData)
+    
+    useEffect(() => {
+        if (selectedUsers.length > 0) {
+            updatePreviewField('otherMembers', selectedUsers.join(', '));
+        } else {
+            return;
+        }
+    }, [selectedUsers]);
+
+    const updatePreviewField = (fieldName: string, value: any) => {
+        if (fieldName === 'dateFrom') {
+            const formattedValue = moment(value, 'DD.MM.YYYY');
+            setSelectedDateFrom(formattedValue);
+            setPreviewData((prevData) => ({
+                ...prevData,
+                [fieldName]: value,
+            }));
+        } if (fieldName === 'dateTo') {
+            const formattedValue = moment(value, 'DD.MM.YYYY');
+            setSelectedDateTo(formattedValue);
+            setPreviewData((prevData) => ({
+                ...prevData,
+                [fieldName]: value,
+            }));
+        } if (fieldName === 'part') {
+            setPreviewData((prevData) => ({
+                ...prevData,
+                [fieldName]: value.value,
+            }));
+        } else {
+            setPreviewData((prevData) => ({
+                ...prevData,
+                [fieldName]: value,
+            }));
+        }
+    };
 
     const { control, handleSubmit, reset } = useForm<ITodoCreate>({
         defaultValues: {
             part: '',
             subject: '',
-            dateFrom: new Date,
-            dateTo: new Date,
+            dateFrom: selectedDateFrom.toDate(),
+            dateTo: selectedDateTo.toDate(),
             additionalInfo: '',
             otherMembers: [],
         },
@@ -53,10 +97,6 @@ const CreateTodo: React.FC = () => {
         
     };
 
-
-
-    const today = new Date;
-
     return (
     <section className={s.createTodo}>
         <Container>
@@ -73,7 +113,11 @@ const CreateTodo: React.FC = () => {
                         render={({ field: {onChange, value}, fieldState }) => (
                         <SelectField
                             value={value}
-                            handleChange={onChange}
+                            // handleChange={onChange}
+                            handleChange={(newValue) => {
+                            onChange(newValue);
+                            updatePreviewField('part', newValue);
+                            }}
                             name="part"
                             className="createTodo"
                             placeholder="Оберіть опцію"
@@ -95,7 +139,12 @@ const CreateTodo: React.FC = () => {
                             value={value}
                             control={control}
                             className="createTodo"
-                            handleChange={onChange}
+                            // handleChange={onChange}
+                            handleChange={(e) => {
+                                const newValue = e.target.value;
+                                onChange(newValue);
+                                updatePreviewField('subject', newValue);
+                                }}
                             error={fieldState.error}
                             {...fields.subject}
                         />
@@ -113,8 +162,12 @@ const CreateTodo: React.FC = () => {
                         <Calendar
                             dateFormat="dd.MM.yyyy" 
                             showMonthYearPicker={false} 
-                            value={today} 
-                            handleChange={onChange}
+                            value={selectedDateFrom.toDate()} 
+                            // handleChange={onChange}
+                            handleChange={(newValue) => {
+                            onChange(newValue);
+                            updatePreviewField('dateFrom', newValue);
+                            }}
                         />
                         )}
                     />
@@ -130,8 +183,12 @@ const CreateTodo: React.FC = () => {
                         <Calendar
                             dateFormat="dd.MM.yyyy" 
                             showMonthYearPicker={false} 
-                            value={today} 
-                            handleChange={onChange}
+                            value={selectedDateTo.toDate()} 
+                            // handleChange={onChange}
+                            handleChange={(newValue) => {
+                            onChange(newValue);
+                            updatePreviewField('dateTo', newValue);
+                            }}
                         />
                         )}
                     />
@@ -147,13 +204,27 @@ const CreateTodo: React.FC = () => {
                         <textarea
                             className={s.textarea}
                             value={value}
-                            onChange={onChange}
+                                // onChange={onChange}
+                            onChange={(e) => {
+                                onChange(e.target.value);
+                                updatePreviewField('additionalInfo', e.target.value);
+                            }}
                             rows={3}
                             cols={40}
                         />
                         )}
                     />
-                    <div className={s.addUserGroup}>
+                    <Text
+                        text={'Користувачі з яким ви хочете поділитися завданням'}
+                        textClass="title-form"
+                    />
+                    <div className={s.userListShow}>
+                        <Text
+                            text={selectedUsers.join(', ')}
+                            textClass="hidenInput"
+                        />
+                    </div>
+                    <div className={s.addUserGroup}> 
                         <div className={s.addUser} onClick={handleAddUsersClick}>   
                             <FaPlus size={20} color='white' /> 
                         </div>  
@@ -162,13 +233,18 @@ const CreateTodo: React.FC = () => {
                             textClass="title-form"
                         /> 
                     </div>
-                    {showUsersList && <div>
-                        <UserList
-                            arrayUser={arrayUser}
-                            selectedUsers={selectedUsers}
-                            setSelectedUsers={setSelectedUsers}
-                        />
-                    </div>}    
+                        {showUsersList && <div className={s.modal}>
+                            <div className={s.modalBorder}>
+                                <button className={s.dismissButton} onClick={handleAddUsersClick }>
+                                    <FontAwesomeIcon icon={faTimes} size="lg" color='white' />
+                                </button>
+                                <UserList
+                                    arrayUser={arrayUser}
+                                    selectedUsers={selectedUsers}
+                                    setSelectedUsers={setSelectedUsers}
+                                />
+                            </div>
+                        </div>}    
                     <div className={s.wrap}>
                         <Button text="Створити" btnClass="btnLight" />
                     </div>

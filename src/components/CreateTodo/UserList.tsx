@@ -14,6 +14,7 @@ const UserList: React.FC<IUserList> = ({ arrayUser, selectedUsers, setSelectedUs
     const [finalListUser, setFinalListUser] = useState<string[]>(arrayUser);
 
     const handleUserSelection = (email: string) => {
+        console.log('Тепер обираэмо')
         if (selectedUsers.includes(email)) {
             setSelectedUsers(selectedUsers.filter((user) => user !== email));
         } else {
@@ -24,7 +25,11 @@ const UserList: React.FC<IUserList> = ({ arrayUser, selectedUsers, setSelectedUs
     const handleTextSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
         const filteredUsers = arrayUser.filter((email) => email.includes(text));
-        setFinalListUser(filteredUsers);
+        if (arrayUser.length > 0) {
+            setFinalListUser(filteredUsers);
+        } else {
+            setFinalListUser([text]);
+        }
     };
 
     return (
@@ -36,7 +41,7 @@ const UserList: React.FC<IUserList> = ({ arrayUser, selectedUsers, setSelectedUs
         />
         <ul className={s.scroll}>
         {finalListUser.map((email, index) => (
-            <li key={email} className={index === arrayUser.length - 1 ? s.lastListItem : s.list}>
+            <li key={email} className={index === finalListUser.length - 1 ? s.lastListItem : s.list}>
                 <label>
                     <input
                         type="checkbox"
