@@ -11,6 +11,11 @@
   }
 }
 
+.todoPart {
+  display: flex;
+  flex-direction: row;
+}
+
 .textarea {
   width: 350px;
   font-weight: 400;
@@ -92,4 +97,18 @@
   width: 350px;
   min-height: 48px;
   background-color: var(--bg-footer-header);
+}
+
+.create {
+  width: 50%;
+}
+.preview {
+  width: 50%;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--bg-footer-header);
 }

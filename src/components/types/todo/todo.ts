@@ -4,7 +4,8 @@ export interface ITodoCreate {
     dateFrom: Date,
     dateTo: Date,
     additionalInfo?: string,
-    otherMembers?: Array<OtherPerson>;
+    otherMembers?: Array<OtherPerson>,
+    saveAfterDeadline: boolean,
 }
 
 export interface OtherPerson {

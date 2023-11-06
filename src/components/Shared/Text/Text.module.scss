@@ -72,7 +72,23 @@
   }
 }
 
+.title-form-todo {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--main-color);
+  @include mixins.mq(tablet) {
+    min-width: 100px;
+  }
+}
+
 .hidenInput {
   width: 335px;
+  height: auto;
+}
+
+.hidenInputAddInfoUser {
+  width: 560px;
   height: auto;
 }

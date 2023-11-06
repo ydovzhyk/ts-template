@@ -1,0 +1,78 @@
+.todo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+}
+
+.todoCard {
+  //   height: 300px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url(../../images/Auth/bg-register.jpg);
+  border-radius: 30px;
+  border: 2px solid var(--bg-footer-header);
+}
+
+.cardBorder {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding: 20px;
+  padding-top: 5px;
+  //   height: 292px;
+  border-radius: 30px;
+  border: 2px solid var(--bg-footer-header);
+}
+
+.partData {
+  display: flex;
+  justify-content: center;
+  padding-left: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 320px;
+  min-height: 48px;
+  background-color: var(--bg-footer-header);
+}
+
+.partDataAddInfoUser {
+  display: flex;
+  justify-content: center;
+  padding-left: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  min-height: 48px;
+  background-color: var(--bg-footer-header);
+}
+
+.partDataDate {
+  display: flex;
+  justify-content: center;
+  padding-left: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 200px;
+  min-height: 48px;
+  background-color: var(--bg-footer-header);
+}
+
+.cardGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.partGroup {
+  //   display: flex;
+  //   flex-direction: row;
+  //   justify-content: space-between;
+}
+
+.todoStatus {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
