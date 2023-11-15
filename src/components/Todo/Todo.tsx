@@ -99,17 +99,19 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                                 textClass="title-form-todo"
                             />
                             <div className={s.partDataAddInfoUser}>
-                                <Text
-                                    text={additionalInfo}
-                                    textClass="hidenInputAddInfoUser"
-                                />
+                                <div className={s.scroll}>
+                                    <Text
+                                        text={additionalInfo}
+                                        textClass="hidenInputAddInfoUser"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </li>
                     {otherMembers && <li className={s.cardGroup}>
                         <div className={s.partGroup}>
                             <Text
-                                text={'Користувачі спільної задачі'}
+                                text={'Користувачі спільного завдання'}
                                 textClass="title-form-todo"
                             />
                             <div className={s.partDataAddInfoUser}>

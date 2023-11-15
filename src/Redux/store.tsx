@@ -13,7 +13,8 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 import auth from './auth/auth-slice';
-// import tasksReducer from 'redux/tasks/tasks-slice';
+import todoSlise from './todo/todo-slice';
+import technicalData from './technical/technical-slice';
 
 const persistConfig = {
   key: 'auth-sid',
@@ -30,7 +31,8 @@ export type AppDispatch = typeof store.dispatch;
 export const store = configureStore({
   reducer: {
     auth: persistedReducer,
-    // tasks: tasksReducer,
+    todo: todoSlise,
+    technicialData: technicalData,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

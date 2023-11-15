@@ -1,10 +1,10 @@
 export interface ITodoCreate {
-    part: string,
+    part: any,
     subject: string,
     dateFrom: Date,
     dateTo: Date,
     additionalInfo?: string,
-    otherMembers?: Array<OtherPerson>,
+    otherMembers?: string,
     saveAfterDeadline: boolean,
 }
 

@@ -17,6 +17,7 @@
     "@types/redux-persist": "^4.3.1",
     "axios": "^1.5.1",
     "date-fns": "^2.30.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "react": "^18.2.0",
@@ -62,6 +63,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@reduxjs/toolkit": "^1.9.6",
+    "@types/lodash": "^4.14.201",
     "@types/react-datepicker": "^4.19.1",
     "@types/react-redux": "^7.1.27"
   }

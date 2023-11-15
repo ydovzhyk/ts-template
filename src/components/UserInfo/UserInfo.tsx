@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../hooks/hooks';
 import { getLogin, getUser } from '../../Redux/auth/auth-selectors'
+import { clearTodoStore } from '../../Redux/todo/todo-slice';
 
 import { logout } from '../../Redux/auth/auth-operations';
 import { AiOutlinePoweroff } from 'react-icons/ai';
@@ -18,9 +19,10 @@ const UserInfo: React.FC = () => {
     const dispatch = useAppDispatch();
     
     const onLogout = async () => {
-    await dispatch(logout());
-    navigate('/');
-  };
+      await dispatch(logout());
+      await dispatch(clearTodoStore());
+      navigate('/');
+    };
 
   const onLogin = () => {
     navigate('/auth/login');

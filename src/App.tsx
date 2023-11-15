@@ -1,9 +1,27 @@
 import React, { useEffect } from 'react';
-import Header from './components/Header/Header';
+import { useSelector } from 'react-redux';
+import { RootState } from './Redux/store';
 import UserRoutes from './components/Routes/UserRoutes';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from './hooks/hooks';
-import { getCurrentUser } from './Redux/auth/auth-operations'
+
+import { getCurrentUser } from './Redux/auth/auth-operations';
+import { getTechnicalData } from './Redux/technical/technical-operations';
+
+import { getAuthLoading } from './Redux/auth/auth-selectors';
+import { getTodoLoading } from './Redux/todo/todo-selectors';
+import { getTechnicalLoading } from './Redux/technical/technical-selectors';
+import { getAuthError } from './Redux/auth/auth-selectors';
+import { getTodoError } from './Redux/todo/todo-selectors';
+import { getTechnicalError } from './Redux/technical/technical-selectors';
+
+import { clearUserError } from './Redux/auth/auth-slice';
+import { clearTodoError } from './Redux/todo/todo-slice';
+import { clearTechnicalDataError } from './Redux/technical/technical-slice';
+
+import Header from './components/Header/Header';
+import Loader from './components/Loader';
+import ErrorMessage from './components/Shared/ErrorMessage';
 import { IAuth } from './components/types/auth/axios-auth';
 
 const App: React.FC = () => {
@@ -13,6 +31,27 @@ const App: React.FC = () => {
 
   const headerFooterHidden =
     location.pathname === '/auth/login' || location.pathname === '/auth/register';
+
+  const loading = useSelector((state: RootState) => {
+    const authLoading = getAuthLoading(state);
+    const todoLoading = getTodoLoading(state);
+    const technicalLoading = getTechnicalLoading(state);
+
+    return authLoading || todoLoading || technicalLoading;
+  });
+  
+  const error = useSelector((state: RootState) => {
+    const authError = getAuthError(state);
+    const todoError = getTodoError(state);
+    const technicalError = getTechnicalError(state);
+
+    return authError || todoError || technicalError;
+  });
+
+  //get Technicial Data
+  useEffect(() => { 
+    dispatch(getTechnicalData());
+  }, [dispatch])
 
   //google auth
   useEffect(() => {
@@ -38,7 +77,7 @@ const App: React.FC = () => {
     }
   }, [dispatch, navigate]);
 
-    // render last visited page
+  // render last visited page
   useEffect(() => {
     const currentPath = location.pathname;
     const currentPathSearch = location.search;
@@ -90,10 +129,20 @@ const App: React.FC = () => {
     }
   }, [location.pathname, location.search]);
 
+  const resetError = () => {
+    dispatch(clearUserError());
+    dispatch(clearTodoError());
+    dispatch(clearTechnicalDataError());
+    };
+
   return (
     <>
-        {!headerFooterHidden && <Header />}
-        <UserRoutes />
+      {loading && <Loader />}
+      {!headerFooterHidden && <Header />}
+      <UserRoutes />
+      {error && (
+        <ErrorMessage text={`${error}`} onDismiss={resetError} />
+      )}
     </>
   );
 }

@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import moment, { Moment } from 'moment';
+import { useAppDispatch } from '../../hooks/hooks';
+import { createTodo } from '../../Redux/todo/todo-operations';
+import { getLogin } from '../../Redux/auth/auth-selectors';
+import { getTodoMessage } from '../../Redux/todo/todo-selectors'
+import { clearTodoMessage, createMessageConfirmation } from '../../Redux/todo/todo-slice';
+import { getEmailList } from '../../Redux/technical/technical-selectors';
+import { getOptionMenu } from '../../Redux/technical/technical-selectors';
 import Container from '../Shared/Container';
 import Calendar from '../Shared/Calendar';
 import SelectField from '../Shared/SelectField';
@@ -9,6 +17,7 @@ import Text from '../Shared/Text';
 import TextField from '../Shared/TextField';
 import UserList from './UserList';
 import Todo from '../Todo/Todo';
+import Message from '../Shared/Message';
 import { fields } from '../Shared/TextField/fields'
 import { ITodoCreate } from '../types/todo/todo';
 import { ITodoProps } from '../Todo/Todo'
@@ -16,32 +25,29 @@ import { FaPlus } from 'react-icons/fa';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import s from './CreateTodo.module.scss'
+import s from './CreateTodo.module.scss';
 
-const options = [
-    { value: 'Option 1', label: 'Option 1' },
-    { value: 'Option 2', label: 'Option 2' },
-    { value: 'Option 3', label: 'Option 3' }
-];
-
-const arrayUser = ['todotodo@gmail.com','tttest@gmail.com','create@gmail.com','test@gmail.com','testtodo@gmail.com', 'ydovzhyk@gmail.com','ydovzhyk@getMaxListeners.com', 'katerynagrosul@getMaxListeners.com', 'morgan7up@gmail.com'];
 const CreateTodo: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const isUserLogin = useSelector(getLogin);
+    const arrayUser = useSelector(getEmailList);
+    const options = useSelector(getOptionMenu);
+    const message = useSelector(getTodoMessage);
     const [showUsersList, setShowUsersList] = useState<boolean>(false);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [selectedDateFrom, setSelectedDateFrom] = useState<Moment>(moment());
     const [selectedDateTo, setSelectedDateTo] = useState<Moment>(moment());
-    const [previewData, setPreviewData] = useState<ITodoProps>({
-    additionalInfo: '',
-    dateFrom: '',
-    dateTo: '',
-    otherMembers: '',
-    part: '',
-    subject: '',
-    saveAfterDeadline: false,
-});
+    const initialState = {
+        additionalInfo: '',
+        dateFrom: '',
+        dateTo: '',
+        otherMembers: '',
+        part: '',
+        subject: '',
+        saveAfterDeadline: false,
+    }
+    const [previewData, setPreviewData] = useState<ITodoProps>(initialState);
 
-    console.log('previewData', previewData)
-    
     useEffect(() => {
         if (selectedUsers.length > 0) {
             updatePreviewField('otherMembers', selectedUsers.join(', '));
@@ -85,19 +91,46 @@ const CreateTodo: React.FC = () => {
             dateFrom: selectedDateFrom.toDate(),
             dateTo: selectedDateTo.toDate(),
             additionalInfo: '',
-            otherMembers: [],
             saveAfterDeadline: false,
         },
     });
 
-    const onSubmit = (data: ITodoCreate) => {
-        console.log('Для Арсенчика',data)
-        reset();
-    };
+    function generateUniqueId() {
+        const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+        const uniqueId = timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function() {
+        return (Math.random() * 16 | 0).toString(16);
+        });
 
-    // const handleDateChange = (selectedDate: string) => {
-    //     console.log('Обрана дата: ', selectedDate);
-    // }
+        return uniqueId;
+    }
+
+    const onSubmit = async (data: ITodoCreate) => {
+        const finalData: ITodoCreate = {
+            part: data.part.value,
+            subject: data.subject,
+            dateFrom: data.dateFrom,
+            dateTo: data.dateTo,
+            additionalInfo: data.additionalInfo,
+            otherMembers: previewData.otherMembers,
+            saveAfterDeadline: data.saveAfterDeadline,
+        }
+
+        if (!isUserLogin) {
+            const existingTasks = JSON.parse(localStorage.getItem('ts-template_tasks') || '[]');
+            existingTasks.push({ ...finalData, id: generateUniqueId() });
+            localStorage.setItem('ts-template_tasks', JSON.stringify(existingTasks));
+            dispatch(createMessageConfirmation("Todo added successfully"));
+        } else {
+            await dispatch(createTodo(finalData));
+        }
+
+        reset();
+        setShowUsersList(false);
+        setSelectedUsers([]);
+        setSelectedDateFrom(moment());
+        setSelectedDateTo(moment());
+        setPreviewData(initialState);
+    };
 
     const handleAddUsersClick = () => {
         if (!showUsersList) {
@@ -105,7 +138,13 @@ const CreateTodo: React.FC = () => {
         } else {
             setShowUsersList(false);
         }
-        
+    };
+
+    const resetMessage = () => {
+        const timeoutId = setTimeout(() => {
+            dispatch(clearTodoMessage());
+        }, 10000);
+        return () => clearTimeout(timeoutId);
     };
 
     return (
@@ -214,7 +253,7 @@ const CreateTodo: React.FC = () => {
                             rules={{ required: false}}
                             render={({ field: {onChange, value}, fieldState }) => (
                             <textarea
-                                className={s.textarea}
+                                className={`${s.textarea} ${s.scroll}`}
                                 value={value}
                                     // onChange={onChange}
                                 onChange={(e) => {
@@ -226,6 +265,8 @@ const CreateTodo: React.FC = () => {
                             />
                             )}
                         />
+                            {isUserLogin && 
+                                <>
                         <Text
                             text={'Користувачі з яким ви хочете поділитися завданням'}
                             textClass="title-form"
@@ -256,7 +297,8 @@ const CreateTodo: React.FC = () => {
                                         setSelectedUsers={setSelectedUsers}
                                     />
                                 </div>
-                            </div>}  
+                            </div>}
+                            </>}  
                         <Text
                             text={'Зберігати завдання після закінчення терміну виконання'}
                             textClass="title-form"
@@ -275,7 +317,6 @@ const CreateTodo: React.FC = () => {
                                         updatePreviewField('saveAfterDeadline', e.target.checked)
                                     }}
                                 />
-                                <label htmlFor="saveAfterDeadline">Зберігати завдання після закінчення терміну виконання</label>
                             </div>
                             )}
                         />
@@ -287,7 +328,10 @@ const CreateTodo: React.FC = () => {
                 <div className={s.preview}>
                     <Todo {...previewData}/>
                 </div>
-            </div>
+                </div>
+                {message && (
+                    <Message text={`${message}`} onDismiss={resetMessage} type="todo" />
+                )}
         </Container>
     </section>
     );

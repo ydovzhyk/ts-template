@@ -3,8 +3,6 @@ import { useAppDispatch } from '../../../hooks/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { login } from '../../../Redux/auth/auth-operations';
 import { NavLink, Navigate, Link, useLocation } from 'react-router-dom';
-import { getAuthError } from './../../../Redux/auth/auth-selectors';
-import { clearUserError } from './../../../Redux/auth/auth-slice';
 import { getLogin } from './../../../Redux/auth/auth-selectors';
 
 import { IUserDataLogin } from '../../types/auth/auth';
@@ -14,14 +12,12 @@ import TextField from '../../Shared/TextField/TextField';
 import Text from '../../Shared/Text';
 import Button from '../../Shared/Button/Button';
 import Container from '../../Shared/Container/Container';
-import ErrorMessage from '../../Shared/ErrorMessage/ErrorMessage';
 
 import { FcGoogle } from 'react-icons/fc';
 
 import s from './Login.module.scss';
 
 const Login: React.FC  = () => {
-    const errorLogin = useSelector(getAuthError);
     const isLogin = useSelector(getLogin);
     const dispatch = useAppDispatch();
     const location = useLocation();
@@ -63,10 +59,6 @@ const Login: React.FC  = () => {
     if (isLogin) {
     return <Navigate to="/" />;
     }
-
-    const resetError = () => {
-        dispatch(clearUserError());
-    };
 
     return (
         <section className={s.auth}>
@@ -122,9 +114,6 @@ const Login: React.FC  = () => {
                         Повернутися на головну
                     </Link>
                 </div>
-                {errorLogin && (
-                    <ErrorMessage text={`${errorLogin}`} onDismiss={resetError} />
-                )}
             </Container>
         </section>
     );

@@ -86,9 +86,13 @@
 .hidenInput {
   width: 335px;
   height: auto;
+  white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .hidenInputAddInfoUser {
   width: 560px;
-  height: auto;
+  max-height: 187px;
+  white-space: pre-wrap;
+  line-height: 1.5;
 }

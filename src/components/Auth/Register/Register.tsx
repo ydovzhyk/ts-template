@@ -4,8 +4,7 @@ import { useAppDispatch } from '../../../hooks/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { register } from '../../../Redux/auth/auth-operations';
 import { NavLink, Navigate, Link, useLocation } from 'react-router-dom';
-import { getAuthError, getUser } from './../../../Redux/auth/auth-selectors';
-import { clearUserError } from './../../../Redux/auth/auth-slice';
+import { getUser, getAuthError } from './../../../Redux/auth/auth-selectors';
 
 import { IUserDataRegister } from '../../types/auth/auth';
 
@@ -14,14 +13,13 @@ import TextField from '../../Shared/TextField/TextField';
 import Text from '../../Shared/Text';
 import Button from '../../Shared/Button/Button';
 import Container from '../../Shared/Container/Container';
-import ErrorMessage from '../../Shared/ErrorMessage/ErrorMessage';
 
 import avatarImage from '../../../images/Avatar/avatar.svg';
 import { FcGoogle } from 'react-icons/fc';
 
 import s from './Register.module.scss';
 
-const Register: React.FC  = () => {
+const Register: React.FC = () => {
     const errorRegister = useSelector(getAuthError);
     const user = useSelector(getUser);
     const newUserId = user.id
@@ -89,10 +87,6 @@ const Register: React.FC  = () => {
     if (!errorRegister && newUserId) {
         return <Navigate to="/auth/login" />;
     }
-
-    const resetError = () => {
-        dispatch(clearUserError());
-    };
 
     return (
         <section className={s.auth}>
@@ -162,9 +156,6 @@ const Register: React.FC  = () => {
                         Повернутися на головну
                     </Link>
                 </div>
-                {errorRegister && (
-                    <ErrorMessage text={`${errorRegister}`} onDismiss={resetError} />
-                )}
             </Container>
         </section>
     );
