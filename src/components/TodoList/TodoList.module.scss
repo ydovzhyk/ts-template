@@ -1,0 +1,12 @@
+@use '../../styles/mixins';
+
+.todoList {
+  padding-bottom: 80px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url(../../images/Auth/bg-register.jpg);
+  background-size: cover;
+  height: 100vh;
+  @include mixins.mq(tablet) {
+    background-repeat: no-repeat;
+  }
+}

@@ -5,7 +5,7 @@ import { FaClock, FaTimes } from 'react-icons/fa';
 import s from './Todo.module.scss';
 
 export interface ITodoProps {
-    additionalInfo: string,
+    additionalInfo: string ,
     dateFrom: string,
     dateTo: string,
     otherMembers: string,

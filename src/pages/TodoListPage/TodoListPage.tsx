@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 import { getLogin } from '../../Redux/auth/auth-selectors'
 import Text from '../../components/Shared/Text';
-import CreateTodo from '../../components/CreateTodo';
+import TodoList from '../../components/TodoList/TodoList';
 
-const HomePage: React.FC = () => {
+const TodoListPage: React.FC = () => {
 
   const isUserLogin = useSelector(getLogin);
 
@@ -15,9 +15,9 @@ const HomePage: React.FC = () => {
           textClass="catalogTitle"
         />
       )}
-      <CreateTodo/>
+      <TodoList/>
     </>
   );
 };
 
-export default HomePage;
+export default TodoListPage;

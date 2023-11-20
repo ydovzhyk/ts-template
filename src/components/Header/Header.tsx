@@ -21,7 +21,7 @@ const Header: React.FC = () => {
                         <NavLink className={customClassName(true)} to="/" end>
                             Створити завдання
                         </NavLink>
-                        <NavLink className={`${customClassName(false)} ${s.lastLink}`} to="/task/list">
+                        <NavLink className={`${customClassName(false)} ${s.lastLink}`} to="/list">
                             Список завдань
                         </NavLink>
                     </div>

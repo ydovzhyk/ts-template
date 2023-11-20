@@ -5,11 +5,11 @@ import Loader from '../Loader/Loader';
 import PublicRoute from './PublicRoutes';
 
 const HomePage = lazy(() => import('../../pages/HomePage/HomePage'));
+const TodoListPage = lazy(() => import('../../pages/TodoListPage/TodoListPage'));
 const NotFoundPage = lazy(() => import('../../pages/NotFoundPage/NotFoundPage'));
 const AuthPage = lazy(() => import('../../pages/AuthPage/AuthPage'));
 const Login = lazy(() => import('../../components/Auth/Login/Login')); // Імпортуйте компонент Login
 const Register = lazy(() => import('../../components/Auth/Register/Register')); 
-// const CreateTaskPage = lazy(() => import('pages/CreateTaskPage'));
 
 const UserRoutes: React.FC = () => {
   return (
@@ -17,6 +17,7 @@ const UserRoutes: React.FC = () => {
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/list" element={<TodoListPage />} />
           <Route path="/auth/*" element={<AuthPage />}>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />

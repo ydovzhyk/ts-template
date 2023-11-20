@@ -72,6 +72,18 @@
   }
 }
 
+.title-form-list {
+  padding-top: 35px;
+  padding-bottom: 15px;
+  font-weight: 400;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: var(--main-color);
+  @include mixins.mq(tablet) {
+    width: 100%;
+  }
+}
+
 .title-form-todo {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -83,10 +95,58 @@
   }
 }
 
+.title-form-todo-preview {
+  max-width: 290px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--main-color);
+}
+
+.title-form-todo-preview-notify {
+  max-width: 290px;
+  padding-top: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--main-color);
+}
+
+.title-form-todo-preview-status {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--main-color);
+}
+
+.title-form-todo-preview-date {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--main-color);
+}
+
 .hidenInput {
   width: 335px;
   height: auto;
   white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.hidenInput-date {
+  padding-top: 3px;
+  width: 75px;
+  height: auto;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.hidenInput-preview {
+  width: 280px;
+  height: auto;
+  font-size: 14px;
   line-height: 1.5;
 }
 

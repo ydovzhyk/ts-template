@@ -88,8 +88,8 @@ const CreateTodo: React.FC = () => {
         defaultValues: {
             part: '',
             subject: '',
-            dateFrom: selectedDateFrom.toDate(),
-            dateTo: selectedDateTo.toDate(),
+            dateFrom: '',
+            dateTo: '',
             additionalInfo: '',
             saveAfterDeadline: false,
         },
