@@ -1,4 +1,6 @@
-.todo {
+@use '../../styles/mixins';
+
+.todoPreview {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -7,11 +9,11 @@
 }
 
 .todoCard {
-  //   height: 300px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url(../../images/Auth/bg-register.jpg);
   border-radius: 30px;
   border: 2px solid var(--bg-footer-header);
+  cursor: pointer;
 }
 
 .cardBorder {
@@ -50,7 +52,6 @@
   padding-bottom: 15px;
   min-height: 48px;
   background-color: var(--bg-footer-header);
-  cursor: pointer;
 }
 
 .partDataDate {
@@ -73,4 +74,64 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+}
+
+.todoWindow {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 624px;
+  z-index: 1200;
+}
+
+.dismissButton {
+  position: absolute;
+  background-color: transparent;
+  border-color: transparent;
+  top: 10px;
+  left: 25px;
+}
+
+.arrowButton {
+  cursor: pointer;
+  @include mixins.mq(tablet) {
+    margin-left: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(245, 245, 245, 0.5);
+    border-radius: 50%;
+    color: var(--text-color);
+    transition: all 0.3s ease-in-out;
+    &:hover {
+      background-color: var(--accent-color);
+    }
+    &:hover svg {
+      color: var(--icon-color);
+    }
+  }
+}
+
+.editTodo {
+  margin-top: 10px;
+  padding: 5px;
+  padding-right: 25px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-end;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url(../../images/Auth/bg-register.jpg);
+  border-radius: 30px;
+  border: 2px solid var(--bg-footer-header);
+}
+
+.icon {
+  font-size: 2x;
 }

@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Shared/Button/Button';
-
+import Text from '../Shared/Text';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -16,9 +14,10 @@ interface NotFoundProps {
 }
 
 const NotFound: React.FC<NotFoundProps> = ({ textContent, backLink, classComp }) => {
-  const [isDisplayed, setIsDisplayed] = useState(true);
+  const navigate = useNavigate();
 
   const handleDismissClick = () => {
+    navigate('/');
   };
 
   return (
@@ -31,11 +30,11 @@ const NotFound: React.FC<NotFoundProps> = ({ textContent, backLink, classComp })
       </div>
       <div className={s.shadow}></div>
 
-      <h1 className={s.title}>Oh!</h1>
-      <h1 className={s.title}>{textContent}</h1>
+      <Text text="Oh!" textClass="textMessage" />
+      <Text text={textContent} textClass="textMessageNotFound" />
 
         <Link to={backLink}>
-          <Button text="Go back" btnClass="btnDark" />
+          <Button text="Go back" btnClass="btnLight" />
         </Link>
     </div>
   );

@@ -14,7 +14,9 @@ export interface ITextFieldProps {
   title?: string;
   className?: string;
   error?: FieldError;
-  control?: Control<any>; 
+  control?: Control<any>;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => {
@@ -23,6 +25,7 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
   const spanClass = props.className ? `${s.span} ${s[props.className]}` : `${s.span}`;
 
   const [isValue, setIsValue] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const newValue = e.target.value;
@@ -36,6 +39,20 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
     }
   };
 
+  const handleFocus = () => {
+    setIsFocused(true);
+    if (props.onFocus) {
+      props.onFocus();
+    }
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (props.onBlur) {
+      props.onBlur();
+    }
+  };
+
   return (
       <label className={labelClass}>
         <input
@@ -45,17 +62,22 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
           name={props.name}
           value={props.value}
           onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           required={props.required}
           title={props.title}
       />
-      {props.className === 'search' && !isValue &&
+      {(props.className === 'search' || props.className === 'searchIST') && !isValue &&
         <span className={spanClass}>
           <CiSearch size={24} style={{ marginRight: '10px', marginLeft: '10px'}}/>
           {props.placeholder}
-        </span>}
-      {props.className !== 'search' && !isValue &&
-        <span className={spanClass}>{props.placeholder}
-        </span>}
+        </span>
+      }
+      {props.className !== 'search' && props.className !== 'searchIST' && !isValue &&
+        <span className={spanClass}>
+          {props.placeholder}
+        </span>
+      }
         {props.error && <p className={s.error}>{props.title}</p>}
       </label>
   );

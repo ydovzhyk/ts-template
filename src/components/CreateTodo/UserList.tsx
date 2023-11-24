@@ -14,7 +14,6 @@ const UserList: React.FC<IUserList> = ({ arrayUser, selectedUsers, setSelectedUs
     const [finalListUser, setFinalListUser] = useState<string[]>(arrayUser);
 
     const handleUserSelection = (email: string) => {
-        console.log('Тепер обираэмо')
         if (selectedUsers.includes(email)) {
             setSelectedUsers(selectedUsers.filter((user) => user !== email));
         } else {

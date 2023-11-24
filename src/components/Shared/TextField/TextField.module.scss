@@ -81,9 +81,6 @@
 //////////////////////////
 .label.createTodo {
   margin-bottom: 0;
-  @include mixins.mq(tablet) {
-    margin-bottom: 0;
-  }
 }
 
 .input.createTodo {
@@ -92,6 +89,7 @@
   width: 350px;
   height: 48px;
   line-height: 1;
+  background-color: white;
   @include mixins.mq(tablet) {
     margin-bottom: 0;
     height: 48px;
@@ -141,5 +139,40 @@
 }
 
 .search.input:focus + span {
+  display: none;
+}
+//////////////////////////
+.label.searchIST {
+  margin-bottom: 0;
+  @include mixins.mq(tablet) {
+    margin-bottom: 0px !important;
+  }
+}
+
+.input.searchIST {
+  margin-bottom: 0px;
+  padding-left: 10px;
+  width: 350px;
+  height: 48px;
+  line-height: 1;
+  @include mixins.mq(tablet) {
+    margin-bottom: 0;
+    height: 48px;
+  }
+}
+
+.input.searchIST:focus {
+  outline: none;
+  border-bottom: 1px solid #b9b9b9;
+  background-color: var(--background-color);
+}
+
+.span.searchIST {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.searchIST.input:focus + span {
   display: none;
 }

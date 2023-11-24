@@ -1,1 +1,38 @@
 @use '../../../styles/mixins';
+
+.todoSearchBox {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: auto;
+}
+
+.scroll {
+  border: 2px solid red;
+  margin-top: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  max-height: 398px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: var(--bg-footer-header);
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--btn-border-color);
+    width: 5px;
+    border-radius: 9em;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--btn-border-color);
+  }
+}
+
+.checkbox {
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  accent-color: var(--btn-border-color);
+}

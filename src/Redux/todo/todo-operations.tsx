@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import {
   axiosCreateTodo,
+  axiosEditTodo,
   axiosTodosWeek,
 } from '../../api/todo';
 
@@ -26,7 +27,7 @@ export const editTodo = createAsyncThunk(
   'todo/edit',
   async (userData: ITodoCreate, { rejectWithValue }) => {
     try {
-        const data: ICreateTodoResponse = await axiosCreateTodo(userData);
+        const data: ICreateTodoResponse = await axiosEditTodo(userData);
         return data;
     } catch (error: any) {
         const { data, status } = error.response || {};

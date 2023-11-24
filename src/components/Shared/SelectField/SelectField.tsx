@@ -5,12 +5,13 @@ import s from './SelectField.module.scss';
 
 interface ISelectFieldProps {
   name: string;
-  value: string;
+  value: { value: string; label: string };
   handleChange: (selectedOption: any) => void;
   placeholder: string;
   required: boolean;
   options: { value: string; label: string }[];
   className?: string;
+  defaultValue?: { value: string; label: string };
 }
 
 const customStyles: StylesConfig = {
@@ -53,6 +54,7 @@ const SelectField: React.FC<ISelectFieldProps> = ({
   required,
   options,
   className,
+  defaultValue,
 }) => {
   const labelClass = className ? `${s.label} ${s[className]}` : `${s.label}`;
   const selectClass = className ? `${s.select} ${s[className]}` : `${s.select}`;
@@ -68,15 +70,19 @@ const SelectField: React.FC<ISelectFieldProps> = ({
         required={required}
         options={options}
         styles={customStyles}
+        defaultValue={defaultValue}
         theme={(theme) => ({
           ...theme,
           borderRadius: 0,
           colors: {
           ...theme.colors,
           primary: 'black',
-      },
-    })}
+          },
+        })}
       />
+      {!defaultValue && value.value === '' && (
+        <span className={s.spanClass}>{placeholder}</span>
+      )}
     </label>
   );
 };

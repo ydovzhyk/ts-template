@@ -41,4 +41,20 @@ export const fields = {
     title: '*The Subject field must be more than 2 characters',
     required: false,
   } as ITextFieldProps,
+  searchByPhrase: {
+    label: 'searchByPhrase',
+    name: 'searchByPhrase',
+    type: 'text',
+    placeholder: 'Введіть слово чи фразу для пошуку',
+    title: '*The Subject field must be more than 2 characters',
+    required: false,
+  } as ITextFieldProps,
+  searchByOtherMembers: {
+    label: 'Email',
+    name: 'searchByOtherMembers',
+    type: 'text',
+    placeholder: 'Email*',
+    title: '*Enter a valid email',
+    required: false,
+  } as ITextFieldProps,
 };

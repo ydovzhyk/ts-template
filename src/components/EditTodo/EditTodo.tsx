@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { useAppDispatch } from '../../hooks/hooks';
-import { createTodo } from '../../Redux/todo/todo-operations';
+import { editTodo } from '../../Redux/todo/todo-operations';
 import { getLogin } from '../../Redux/auth/auth-selectors';
 import { getTodoMessage } from '../../Redux/todo/todo-selectors'
 import { clearTodoMessage, createMessageConfirmation } from '../../Redux/todo/todo-slice';
@@ -15,7 +16,7 @@ import SelectField from '../Shared/SelectField';
 import Button from '../Shared/Button';
 import Text from '../Shared/Text';
 import TextField from '../Shared/TextField';
-import UserList from './UserList';
+import UserList from '../../components/CreateTodo/UserList';
 import Todo from '../Todo/Todo';
 import Message from '../Shared/Message';
 import { fields } from '../Shared/TextField/fields'
@@ -24,29 +25,55 @@ import { ITodoProps } from '../Todo/Todo'
 import { FaPlus } from 'react-icons/fa';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ITodoPrewievProps } from '../TodoPreview/TodoPreview';
 
-import s from './CreateTodo.module.scss';
+import s from './EditTodo.module.scss';
 
-const CreateTodo: React.FC = () => {
+interface EditTodoProps {
+    todoData: ITodoPrewievProps;
+}
+
+const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
+
+    const selectedUsersInitial = todoData?.otherMembers ? [todoData.otherMembers] : [];
+    const additionalInfoInitial = todoData?.additionalInfo ? todoData.additionalInfo : '';
+    const dateFromInitial = todoData?.dateFrom ? todoData.dateFrom : '';
+    const dateToInitial = todoData?.dateTo ? todoData.dateTo : '';
+    const otherMembersInitial = todoData?.otherMembers ? todoData.otherMembers : '';
+    const partInitial = todoData?.part ? todoData.part : '';
+    const subjectInitial = todoData?.subject ? todoData.subject : '';
+    const saveAfterDeadlineInitial = todoData?.saveAfterDeadline ? todoData.saveAfterDeadline : false;
+    const _idInitial = todoData?._id ? todoData._id : '';
+
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const isUserLogin = useSelector(getLogin);
     const arrayUser = useSelector(getEmailList);
     const options = useSelector(getOptionMenu);
     const message = useSelector(getTodoMessage);
     const [showUsersList, setShowUsersList] = useState<boolean>(false);
-    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-    const [selectedDateFrom, setSelectedDateFrom] = useState<Moment>(moment());
-    const [selectedDateTo, setSelectedDateTo] = useState<Moment>(moment());
+    const [selectedUsers, setSelectedUsers] = useState<string[]>(selectedUsersInitial);
+    const format = "DD.MM.YYYY";
+    const [selectedDateFrom, setSelectedDateFrom] = useState<Moment>(moment(dateFromInitial, format));
+    const [selectedDateTo, setSelectedDateTo] = useState<Moment>(moment(dateToInitial, format));
+
+
     const initialState = {
-        additionalInfo: '',
-        dateFrom: '',
-        dateTo: '',
-        otherMembers: '',
-        part: '',
-        subject: '',
-        saveAfterDeadline: false,
+        additionalInfo: additionalInfoInitial,
+        dateFrom: dateFromInitial,
+        dateTo: dateToInitial,
+        otherMembers: otherMembersInitial,
+        part: partInitial,
+        subject: subjectInitial,
+        saveAfterDeadline: saveAfterDeadlineInitial,
     }
     const [previewData, setPreviewData] = useState<ITodoProps>(initialState);
+
+    useEffect(() => {
+        if (!todoData || !Object.keys(todoData).length) {
+            navigate('/');
+        }
+    }, [todoData, navigate]);
 
     useEffect(() => {
         if (selectedUsers.length > 0) {
@@ -86,23 +113,15 @@ const CreateTodo: React.FC = () => {
 
     const { control, handleSubmit, reset } = useForm<ITodoCreate>({
         defaultValues: {
-            part: { value: '', label: '' },
-            subject: '',
-            dateFrom: '',
-            dateTo: '',
-            additionalInfo: '',
-            saveAfterDeadline: false,
+            additionalInfo: additionalInfoInitial,
+            dateFrom: dateFromInitial,
+            dateTo: dateToInitial,
+            otherMembers: otherMembersInitial,
+            part: { value: partInitial, label: partInitial },
+            subject: subjectInitial,
+            saveAfterDeadline: saveAfterDeadlineInitial,
         },
     });
-
-    function generateUniqueId() {
-        const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
-        const uniqueId = timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function() {
-        return (Math.random() * 16 | 0).toString(16);
-        });
-
-        return uniqueId;
-    }
 
     const onSubmit = async (data: ITodoCreate) => {
         const finalData: ITodoCreate = {
@@ -113,15 +132,22 @@ const CreateTodo: React.FC = () => {
             additionalInfo: data.additionalInfo,
             otherMembers: previewData.otherMembers,
             saveAfterDeadline: data.saveAfterDeadline,
+            _id: todoData._id,
         }
 
         if (!isUserLogin) {
             const existingTasks = JSON.parse(localStorage.getItem('ts-template_tasks') || '[]');
-            existingTasks.push({ ...finalData, _id: generateUniqueId() });
-            localStorage.setItem('ts-template_tasks', JSON.stringify(existingTasks));
-            dispatch(createMessageConfirmation("Todo added successfully"));
+            const taskIndex = existingTasks.findIndex((task: ITodoCreate) => task._id === _idInitial);
+
+            if (taskIndex !== -1) {
+                existingTasks[taskIndex] = { ...existingTasks[taskIndex], ...finalData };
+                localStorage.setItem('ts-template_tasks', JSON.stringify(existingTasks));
+                dispatch(createMessageConfirmation("Todo edited successfully"));
+            } else {
+                return;
+            }
         } else {
-            await dispatch(createTodo(finalData));
+            await dispatch(editTodo(finalData));
         }
 
         reset();
@@ -130,6 +156,7 @@ const CreateTodo: React.FC = () => {
         setSelectedDateFrom(moment());
         setSelectedDateTo(moment());
         setPreviewData(initialState);
+        naviagteToList();
     };
 
     const handleAddUsersClick = () => {
@@ -147,6 +174,13 @@ const CreateTodo: React.FC = () => {
         return () => clearTimeout(timeoutId);
     };
 
+    const naviagteToList = () => {
+        const timeoutId = setTimeout(() => {
+            navigate('/list');
+        }, 10000);
+        return () => clearTimeout(timeoutId);
+    };
+
     return (
     <section className={s.createTodo}>
         <Container>
@@ -160,20 +194,23 @@ const CreateTodo: React.FC = () => {
                         <Controller
                             control={control}
                             name="part"
-                            rules={{ required: true}}
+                            rules={{ required: true }}
                             render={({ field: {onChange, value}, fieldState }) => (
                             <SelectField
                                 value={value}
-                                // handleChange={onChange}
                                 handleChange={(newValue) => {
                                 onChange(newValue);
                                 updatePreviewField('part', newValue);
                                 }}
                                 name="part"
                                 className="createTodo"
-                                placeholder="Оберіть опцію"
+                                placeholder={partInitial}
                                 required={true}
                                 options={options}
+                                defaultValue={{
+                                    value: partInitial,
+                                    label: partInitial,
+                                }}
                             />
                             )}
                         />
@@ -190,7 +227,6 @@ const CreateTodo: React.FC = () => {
                                 value={value}
                                 control={control}
                                 className="createTodo"
-                                // handleChange={onChange}
                                 handleChange={(e) => {
                                     const newValue = e.target.value;
                                     onChange(newValue);
@@ -214,7 +250,6 @@ const CreateTodo: React.FC = () => {
                                 dateFormat="dd.MM.yyyy" 
                                 showMonthYearPicker={false} 
                                 value={selectedDateFrom.toDate()} 
-                                // handleChange={onChange}
                                 handleChange={(newValue) => {
                                 onChange(newValue);
                                 updatePreviewField('dateFrom', newValue);
@@ -235,7 +270,6 @@ const CreateTodo: React.FC = () => {
                                 dateFormat="dd.MM.yyyy" 
                                 showMonthYearPicker={false} 
                                 value={selectedDateTo.toDate()} 
-                                // handleChange={onChange}
                                 handleChange={(newValue) => {
                                 onChange(newValue);
                                 updatePreviewField('dateTo', newValue);
@@ -321,7 +355,7 @@ const CreateTodo: React.FC = () => {
                             )}
                         />
                         <div className={s.wrap}>
-                            <Button text="Створити" btnClass="btnLight" />
+                            <Button text="Зберегти зміни" btnClass="btnLight" />
                         </div>
                     </form>
                 </div>
@@ -337,4 +371,4 @@ const CreateTodo: React.FC = () => {
     );
 }
 
-export default CreateTodo;
+export default EditTodo;

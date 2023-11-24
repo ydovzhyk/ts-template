@@ -70,7 +70,6 @@ export const getCurrentUser = createAsyncThunk(
       const accessToken: IToken = authData.accessToken;
       const userData: IAuth = authData;
       const data: ILoginResponse = await axiosGetCurrentUser(userData, accessToken);
-      console.log(data)
       return data;
     } catch (error: any) {
         const { data, status } = error.response || {};

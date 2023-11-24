@@ -42,3 +42,19 @@
     width: 350px;
   }
 }
+
+.spanClass {
+  position: absolute;
+  top: 1px;
+  left: 10px;
+  display: inline-block;
+  width: 150px;
+  margin-top: 15px;
+  font-size: 14px;
+  color: var(--second-text-input-color);
+  transition: all var(--transition-duration) var(--timing-function);
+  pointer-events: none;
+  @include mixins.mq(tablet) {
+    font-size: 16px;
+  }
+}

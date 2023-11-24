@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom';
-
 import NotFound from '../../components/NotFound/NotFound';
 
 import s from '../../components/NotFound/NotFound.module.scss';

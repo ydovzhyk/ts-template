@@ -1,4 +1,5 @@
 export interface ITodoCreate {
+    _id?: string,
     part: any,
     subject: string,
     dateFrom: string,
@@ -22,4 +23,12 @@ export interface ITodoServer {
 
 export interface OtherPerson {
     email: string;
+}
+
+export interface ITodoSearch {
+    searchByPart?: any,
+    searchByPhrase?: string,
+    searchByDate?: string,
+    searchByStatus?: any,
+    searchByOtherMembers?: string,
 }

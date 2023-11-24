@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import {
     createTodo,
+    editTodo,
     getTodosWeek,
 } from './todo-operations';
 
@@ -37,6 +38,9 @@ const todo = createSlice({
             store.message = '';
             store.todoList = [];
             store.arrayTodosWeek = [];
+        },
+        saveArrayTodosWeek: (store, action) => {
+            store.arrayTodosWeek = action.payload;
         }
     },
 
@@ -51,6 +55,19 @@ const todo = createSlice({
             store.message = action.payload.message;
         });
         builder.addCase(createTodo.rejected, (store, action: any) => {
+            store.loading = false;
+            store.error = action.payload.data?.message || 'Oops, something went wrong, try again';
+        });
+        //edit Todo
+        builder.addCase(editTodo.pending, (store) => {
+            store.loading = true;
+            store.error = '';
+        });
+        builder.addCase(editTodo.fulfilled, (store, action) => {
+            store.loading = false;
+            store.message = action.payload.message;
+        });
+        builder.addCase(editTodo.rejected, (store, action: any) => {
             store.loading = false;
             store.error = action.payload.data?.message || 'Oops, something went wrong, try again';
         });
@@ -77,4 +94,5 @@ export const {
   clearTodoList,
   createMessageConfirmation,
   clearTodoStore,
+  saveArrayTodosWeek,
 } = todo.actions;
