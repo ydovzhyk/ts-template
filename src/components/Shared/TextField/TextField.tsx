@@ -1,4 +1,4 @@
-import { forwardRef, ChangeEventHandler, useState } from 'react';
+import { ChangeEvent, forwardRef, ChangeEventHandler, useState, useEffect, useCallback} from 'react';
 import { FieldError, Control } from 'react-hook-form';
 import { CiSearch } from 'react-icons/ci';
 
@@ -9,7 +9,7 @@ export interface ITextFieldProps {
   name?: string;
   value?: string;
   handleChange?: ChangeEventHandler<HTMLInputElement>;
-  placeholder?: string;
+  placeholder?: string | string[];
   required?: boolean;
   title?: string;
   className?: string;
@@ -17,18 +17,22 @@ export interface ITextFieldProps {
   control?: Control<any>;
   onFocus?: () => void;
   onBlur?: () => void;
+  clearTextField?: boolean;
 }
 
 const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => {
   const labelClass = props.className ? `${s.label} ${s[props.className]}` : `${s.label}`;
   const inputClass = props.className ? `${s.input} ${s[props.className]}` : `${s.input}`;
   const spanClass = props.className ? `${s.span} ${s[props.className]}` : `${s.span}`;
+  const clearTextField = props.clearTextField;
 
+  const [inputValue, setInputValue] = useState<string>(props.value || '');
   const [isValue, setIsValue] = useState<boolean>(false);
-  const [isFocused, setIsFocused] = useState<boolean>(false);
-  
-  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    setInputValue(newValue);
+
     if (props.handleChange) {
       props.handleChange(e);
     }
@@ -37,17 +41,32 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
     } else {
       setIsValue(false);
     }
-  };
+  }, [props]);
 
+  //скидуэмо значення Input коли користувач був обраний
+  useEffect(() => {
+    if (clearTextField) {
+      setInputValue('');
+      setIsValue(false);
+      const fakeEvent = {
+        target: {
+          value: '',
+        },
+      } as ChangeEvent<HTMLInputElement>;
+
+      handleInputChange(fakeEvent);
+    } else {
+      return;
+    }
+  }, [clearTextField, handleInputChange]);
+  
   const handleFocus = () => {
-    setIsFocused(true);
     if (props.onFocus) {
       props.onFocus();
     }
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
     if (props.onBlur) {
       props.onBlur();
     }
@@ -60,7 +79,7 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
           className={inputClass}
           type={props.type}
           name={props.name}
-          value={props.value}
+          value={inputValue}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}

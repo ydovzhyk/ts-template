@@ -136,6 +136,7 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
+  padding-top: 1px;
 }
 
 .search.input:focus + span {
@@ -150,13 +151,11 @@
 }
 
 .input.searchIST {
-  margin-bottom: 0px;
   padding-left: 10px;
   width: 350px;
   height: 48px;
   line-height: 1;
   @include mixins.mq(tablet) {
-    margin-bottom: 0;
     height: 48px;
   }
 }
@@ -171,6 +170,7 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
+  padding-top: 1px;
 }
 
 .searchIST.input:focus + span {

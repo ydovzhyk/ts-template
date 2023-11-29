@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import moment, { Moment } from 'moment';
@@ -8,6 +8,7 @@ import Text from '../../Shared/Text';
 import SelectField from '../../Shared/SelectField';
 import TextField from '../../Shared/TextField';
 import Calendar from '../../Shared/Calendar';
+import Button from '../../Shared/Button';
 import { getOptionMenu } from '../../../Redux/technical/technical-selectors';
 import { getLogin } from '../../../Redux/auth/auth-selectors';
 import { getEmailList } from '../../../Redux/technical/technical-selectors';
@@ -17,20 +18,39 @@ import { ITodoSearch } from '../../types/todo/todo';
 import s from './SearchTodo.module.scss';
 
 const SearchTodo: React.FC = () => {
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [selectedDate, setSelectedDate] = useState<Moment>(moment());
     const options = useSelector(getOptionMenu);
     const isUserLogin = useSelector(getLogin);
+
     const arrayUser = useSelector(getEmailList);
     const [finalListUser, setFinalListUser] = useState<string[]>(arrayUser);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [isListVisible, setIsListVisible] = useState<boolean>(false);
+    const [clearTextField, setClearTextField] = useState<boolean>(false);
     const optionsStatus = [
         { value: 'Виконується', label: 'Виконується' },
         { value: 'Термін закінчився', label: 'Термін закінчився' },
     ]
 
+    //Прибираэмо список коли відбувся клік за межами div
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                setIsListVisible(false);
+                setClearTextField(false);
+            }
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [wrapperRef, clearTextField]);
 
-    console.log(isListVisible)
+    useEffect(() => {
+        setClearTextField(false);
+    }, [selectedUsers]);
+
     const { control, handleSubmit, reset } = useForm<ITodoSearch>({
         defaultValues: {
             searchByPart: { value: '', label: '' },
@@ -46,8 +66,8 @@ const SearchTodo: React.FC = () => {
             searchByPart: data.searchByPart.value,
             searchByPhrase: data.searchByPhrase,
             searchByDate: data.searchByDate,
-            searchByStatus: data.searchByStatus,
-            searchByOtherMembers: data.searchByOtherMembers,
+            searchByStatus: data.searchByStatus.value,
+            searchByOtherMembers: selectedUsers.join(', '),
         }
 
         if (!isUserLogin) {
@@ -58,17 +78,17 @@ const SearchTodo: React.FC = () => {
         }
 
         reset();
-        // setShowUsersList(false);
-        // setSelectedUsers([]);
-        // setSelectedDate(moment());
-        // setPreviewData(initialState);
+        setSelectedUsers([]);
+        setIsListVisible(false);
     };
 
     const handleUserSelection = (email: string) => {
         if (selectedUsers.includes(email)) {
             setSelectedUsers(selectedUsers.filter((user) => user !== email));
+            setClearTextField(true);
         } else {
             setSelectedUsers([...selectedUsers, email]);
+            setClearTextField(true);
         }
     };
 
@@ -83,46 +103,43 @@ const SearchTodo: React.FC = () => {
     };
 
     const handleTextSearchFocus = () => {
-        setIsListVisible(true); // Показати список при фокусуванні
-    };
-
-    const handleTextSearchBlur = () => {
-        setIsListVisible(false); // Сховати список при втраті фокусу
+        setIsListVisible(true);
     };
 
     return (
         <div className={s.container}>
-            <form className={s.todoSearchBox} onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <Text
-                        text={'За розділом'}
-                        textClass="title-form"
-                    />
-                    <Controller
-                        control={control}
-                        name="searchByPart"
-                        rules={{ required: false}}
-                        render={({ field: {onChange, value}, fieldState }) => (
-                        <SelectField
-                            value={value}
-                            handleChange={(newValue) => {
-                                onChange(newValue);
-                            }}
-                            name="searchByPart"
-                            className="createTodo"
-                            placeholder="Оберіть опцію"
-                            required={false}
-                            options={options}
+            <form className={s.formSection} onSubmit={handleSubmit(onSubmit)}>
+                <div className={s.todoSearchBox}>
+                    <div className={s.todoSearchBoxPart}>
+                        <Text
+                            text={'За розділом'}
+                            textClass="title-form"
                         />
-                        )}
-                    />
-                </div>
-                <div>
-                    <Text
-                        text={'За словом чи фразою'}
-                        textClass="title-form"
-                    />
-                    <Controller
+                        <Controller
+                            control={control}
+                            name="searchByPart"
+                            rules={{ required: false}}
+                            render={({ field: {onChange, value}, fieldState }) => (
+                            <SelectField
+                                value={value}
+                                handleChange={(newValue) => {
+                                    onChange(newValue);
+                                }}
+                                name="searchByPart"
+                                className="createTodo"
+                                placeholder="Оберіть опцію"
+                                required={false}
+                                options={options}
+                            />
+                            )}
+                        />
+                    </div>
+                    <div className={s.todoSearchBoxPart}>
+                        <Text
+                            text={'За словом чи фразою'}
+                            textClass="title-form"
+                        />
+                        <Controller
                             control={control}
                             name="searchByPhrase"
                             rules={{ required: false}}
@@ -139,12 +156,12 @@ const SearchTodo: React.FC = () => {
                                 {...fields.searchByPhrase}
                             />
                             )}
-                    />
-                </div>
-                <div>
-                    <Text
-                        text={'За датою'}
-                        textClass="title-form"
+                        />
+                    </div>
+                    <div className={s.todoSearchBoxPart}>
+                        <Text
+                            text={'За датою'}
+                            textClass="title-form"
                         />
                         <Controller
                             control={control}
@@ -161,50 +178,43 @@ const SearchTodo: React.FC = () => {
                             />
                             )}
                         />
-                </div>
-                <div>
-                    <Text
-                        text={'За статусом'}
-                        textClass="title-form"
-                    />
-                    <Controller
-                        control={control}
-                        name="searchByStatus"
-                        rules={{ required: false}}
-                        render={({ field: {onChange, value}, fieldState }) => (
-                        <SelectField
-                            value={value}
-                            handleChange={(newValue) => {
-                                onChange(newValue);
-                            }}
-                            name="searchByStatus"
-                            className="createTodo"
-                            placeholder="Оберіть опцію"
-                            required={false}
-                            options={optionsStatus}
-                        />
-                        )}
-                    />
-                </div>
-                {isUserLogin && (
-                    <div>
+                    </div>
+                    <div className={s.todoSearchBoxPart}>
                         <Text
-                            text={'За користувачем'}
+                            text={'За статусом'}
                             textClass="title-form"
                         />
                         <Controller
                             control={control}
-                            name="searchByOtherMembers"
-                            rules={{ required: false }}
-                            render={({ field: { onChange, value }, fieldState }) => (
-                            <TextField
-                                className="searchIST"
-                                handleChange={handleTextSearch}
-                                onFocus={handleTextSearchFocus}
-                                onBlur={handleTextSearchBlur}
-                                {...fields.search}
+                            name="searchByStatus"
+                            rules={{ required: false}}
+                            render={({ field: {onChange, value}, fieldState }) => (
+                            <SelectField
+                                value={value}
+                                handleChange={(newValue) => {
+                                    onChange(newValue);
+                                }}
+                                name="searchByStatus"
+                                className="createTodo"
+                                placeholder="Оберіть опцію"
+                                required={false}
+                                options={optionsStatus}
                             />
                             )}
+                        />
+                    </div>
+                    {isUserLogin && (
+                    <div ref={wrapperRef} className={s.todoSearchBoxPart}>
+                        <Text
+                            text={'За користувачем'}
+                            textClass="title-form"
+                        />
+                        <TextField
+                            className={"searchIST"}
+                            handleChange={handleTextSearch}
+                            onFocus={handleTextSearchFocus}
+                            clearTextField={clearTextField}
+                            {...fields.search}
                         />
                         {isListVisible && (
                             <ul className={s.scroll}>
@@ -224,7 +234,23 @@ const SearchTodo: React.FC = () => {
                             </ul>
                         )}
                     </div>
-                )}
+                    )}
+                    {isUserLogin && selectedUsers.length > 0 &&(
+                    <div className={s.todoSearchBoxPart}>
+                        <Text
+                            text={'Список обраних користувачів'}
+                            textClass="title-form"
+                        />
+                        <Text
+                            text={selectedUsers.join(', ')}
+                            textClass="list-users"
+                        />
+                    </div>
+                    )}
+                </div>
+                <div className={s.wrap}>
+                    <Button text="Знайти завдання" btnClass="btnLight" />
+                </div>
             </form>
         </div>
     );

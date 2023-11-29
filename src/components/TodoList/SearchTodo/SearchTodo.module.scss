@@ -3,15 +3,19 @@
 .todoSearchBox {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: auto;
+  row-gap: 0px;
+  column-gap: 95px;
+}
+
+.formSection {
+  position: relative;
 }
 
 .scroll {
-  border: 2px solid red;
   margin-top: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
-  width: 100%;
+  width: 350px;
   max-height: 398px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -35,4 +39,30 @@
   margin-right: 10px;
   cursor: pointer;
   accent-color: var(--btn-border-color);
+}
+
+.list {
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  width: 350px;
+  height: 46px;
+  background-color: var(--background-color);
+  color: var(--second-text-color);
+}
+
+.lastListItem {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 350px;
+  height: 48px;
+  background-color: var(--background-color);
+  color: var(--second-text-color);
+}
+
+.wrap {
+  position: absolute;
+  top: 220px;
+  left: 0px;
 }
