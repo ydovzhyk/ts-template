@@ -4,4 +4,6 @@ export interface ITechnicalDataState {
   error: string;
   message: string;
   optionMenu: { value: string; label: string }[];
+  searchPage: number;
+  weekPage: number;
 }

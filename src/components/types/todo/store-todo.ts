@@ -6,4 +6,5 @@ export interface ITodoState {
   message: string;
   todoList: ITodoServer[];
   arrayTodosWeek: ITodoServer[];
+  arrayTodosSearch: ITodoServer[];
 }

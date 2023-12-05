@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../hooks/hooks';
 import moment from 'moment';
@@ -6,21 +6,48 @@ import { getTodosWeek } from '../../Redux/todo/todo-operations';
 import { getArrayTodosWeek } from '../../Redux/todo/todo-selectors';
 import { getLogin } from '../../Redux/auth/auth-selectors';
 import { saveArrayTodosWeek } from '../../Redux/todo/todo-slice';
+import { getArrayTodosSearch } from '../../Redux/todo/todo-selectors';
+import { saveSearchPage, saveWeekPage } from '../../Redux/technical/technical-slice';
 
 import Container from '../Shared/Container';
 import Text from '../Shared/Text';
-import TodoCarusel from './TodoCarusel';
+import TodoPreview from '../TodoPreview';
+import Pagination from '../Shared/Pagination';
 
-import { ITodoCreate } from '../types/todo/todo';
+import { ITodoCreate, ITodoServer } from '../types/todo/todo';
 
 import s from './TodoList.module.scss'
 import SearchTodo from './SearchTodo';
 
+const chunkArray = (array: ITodoServer[],  chunkSize: number) => {
+    return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
+        array.slice(index * chunkSize, (index + 1) * chunkSize)
+    );
+};
 
 const TodoList: React.FC = () => { 
     const dispatch = useAppDispatch();
     const userLogin = useSelector(getLogin);
     const arrayTodosWeek = useSelector(getArrayTodosWeek);
+    const arrayTodosSearch = useSelector(getArrayTodosSearch);
+
+    const itemsPerPage = 3;
+    const totalPagesSearch = arrayTodosSearch.length > 0 ? Math.ceil(arrayTodosSearch.length / itemsPerPage) : 0;
+    const totalPagesWeek = arrayTodosWeek.length > 0 ? Math.ceil(arrayTodosWeek.length / itemsPerPage) : 0;
+    const [currentGroupSearchIndex, setCurrentGroupSearchIndex] = useState(0);
+    const [currentGroupWeekIndex, setCurrentGroupWeekIndex] = useState(0);
+    const chunkedTodosSearch = chunkArray(arrayTodosSearch, itemsPerPage);
+    const chunkedTodosWeek = chunkArray(arrayTodosWeek, itemsPerPage);
+    const currentGroupSearch = chunkedTodosSearch[currentGroupSearchIndex];
+    const currentGroupWeek = chunkedTodosWeek[currentGroupWeekIndex];
+
+    useEffect(() => {
+        setCurrentGroupSearchIndex(0);
+    }, [arrayTodosSearch]);
+
+    useEffect(() => {
+        setCurrentGroupWeekIndex(0);
+    }, [arrayTodosWeek]);
 
     useEffect(() => {
         const fetchDataFromLocalStorage = () => {
@@ -55,6 +82,16 @@ const TodoList: React.FC = () => {
         }
     }, [dispatch, userLogin]);
 
+    const handlePageChange = (pageIndex: number, type: string) => {
+        if (type === "search") {
+            setCurrentGroupSearchIndex(pageIndex - 1);
+            dispatch(saveSearchPage(pageIndex))
+        } else if (type === "week") {
+            setCurrentGroupWeekIndex(pageIndex - 1);
+            dispatch(saveWeekPage(pageIndex))
+        }
+    };
+
     return (
         <section className={s.todoList}>
             <Container>
@@ -65,7 +102,20 @@ const TodoList: React.FC = () => {
                                 text={`Завдання, які потрібно завершити в наступні 7 днів (${arrayTodosWeek.length} шт)`}
                                 textClass="title-form-list"
                             />
-                            <TodoCarusel />
+                            <ul className={s.todosGroupWeek}>
+                                {currentGroupWeek.map((todo: ITodoServer) => (
+                                    <li key={todo._id}>
+                                        <TodoPreview {...todo} />
+                                    </li>
+                                ))}
+                            </ul>
+                            <div>
+                                {totalPagesWeek > 0 && (<Pagination
+                                    totalPages={totalPagesWeek}
+                                    currentPage={currentGroupWeekIndex + 1}
+                                    onPageChange={(page) => handlePageChange(page, "week")}
+                                />)}        
+                            </div>
                         </div>}
                     {arrayTodosWeek.length === 0 &&
                         <div>
@@ -82,7 +132,24 @@ const TodoList: React.FC = () => {
                         <SearchTodo />
                     </div>
                 <div>
-
+                {arrayTodosSearch.length > 0 && (
+                    <>
+                        <ul className={s.todosGroupSearch}>
+                            {currentGroupSearch.map((todo: ITodoServer) => (
+                                <li key={todo._id}>
+                                    <TodoPreview {...todo} />
+                                </li>
+                            ))}
+                        </ul>
+                        <div>
+                            {totalPagesSearch > 0 && (<Pagination
+                                totalPages={totalPagesSearch}
+                                currentPage={currentGroupSearchIndex + 1}
+                                onPageChange={(page) => handlePageChange(page, "search")}
+                            />)}        
+                        </div>
+                    </>
+                )}
                 </div>
                 <div>
 

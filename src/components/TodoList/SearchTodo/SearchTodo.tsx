@@ -1,9 +1,13 @@
 import React, { useState, useRef,useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import moment, { Moment } from 'moment';
+import { useAppDispatch } from '../../../hooks/hooks';
+import { buildURL } from '../../helpers/buildURL';
 
-import { fields } from '../../Shared/TextField/fields'
+import { fields } from '../../Shared/TextField/fields';
+import { searchLocalStoradge } from '../../helpers/searchLocalStoradge';
 import Text from '../../Shared/Text';
 import SelectField from '../../Shared/SelectField';
 import TextField from '../../Shared/TextField';
@@ -12,16 +16,24 @@ import Button from '../../Shared/Button';
 import { getOptionMenu } from '../../../Redux/technical/technical-selectors';
 import { getLogin } from '../../../Redux/auth/auth-selectors';
 import { getEmailList } from '../../../Redux/technical/technical-selectors';
+import { getSearchTodo } from '../../../Redux/todo/todo-operations';
+import { saveArrayTodosSearch } from '../../../Redux/todo/todo-slice';
+import { getSearchPage, getWeekPage } from '../../../Redux/technical/technical-selectors';
 
 import { ITodoSearch } from '../../types/todo/todo';
 
 import s from './SearchTodo.module.scss';
+import { saveSearchPage } from '../../../Redux/technical/technical-slice';
 
 const SearchTodo: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [selectedDate, setSelectedDate] = useState<Moment>(moment());
     const options = useSelector(getOptionMenu);
     const isUserLogin = useSelector(getLogin);
+    const searchPage = useSelector(getSearchPage);
+    const weekPage = useSelector(getWeekPage);
 
     const arrayUser = useSelector(getEmailList);
     const [finalListUser, setFinalListUser] = useState<string[]>(arrayUser);
@@ -31,6 +43,7 @@ const SearchTodo: React.FC = () => {
     const optionsStatus = [
         { value: 'Виконується', label: 'Виконується' },
         { value: 'Термін закінчився', label: 'Термін закінчився' },
+        { value: 'Всі завдання', label: 'Всі завдання' },
     ]
 
     //Прибираэмо список коли відбувся клік за межами div
@@ -71,15 +84,19 @@ const SearchTodo: React.FC = () => {
         }
 
         if (!isUserLogin) {
-            
+            const searchArray = await searchLocalStoradge(finalData);
+            await dispatch(saveArrayTodosSearch(searchArray));
         } else {
-            console.log('Це дата у пошуку', finalData)
-            // await dispatch(createTodo(finalData));
+            await dispatch(getSearchTodo(finalData));
         }
+
+        const newUrl = await buildURL(finalData, searchPage, weekPage  );
+        navigate(newUrl);
 
         reset();
         setSelectedUsers([]);
         setIsListVisible(false);
+        dispatch(saveSearchPage(0));
     };
 
     const handleUserSelection = (email: string) => {

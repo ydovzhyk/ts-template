@@ -27,10 +27,11 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
   const clearTextField = props.clearTextField;
 
   const [inputValue, setInputValue] = useState<string>(props.value || '');
+
   const [isValue, setIsValue] = useState<boolean>(false);
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const newValue = e.target.value; 
     setInputValue(newValue);
 
     if (props.handleChange) {
@@ -42,6 +43,12 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
       setIsValue(false);
     }
   }, [props]);
+
+  useEffect(() => { 
+    if (props.value === '') {
+      setInputValue('');
+    }
+  }, [props.value]);
 
   //скидуэмо значення Input коли користувач був обраний
   useEffect(() => {

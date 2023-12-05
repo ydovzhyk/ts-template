@@ -11,7 +11,7 @@ export interface ITodoCreate {
 
 export interface ITodoServer {
     _id: string,
-    userId: string,
+    userId?: string,
     part: string,
     subject: string,
     dateFrom: string,

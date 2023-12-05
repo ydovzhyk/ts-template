@@ -10,3 +10,15 @@
     background-repeat: no-repeat;
   }
 }
+
+.todosGroupWeek {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 95px;
+}
+.todosGroupSearch {
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 95px;
+}

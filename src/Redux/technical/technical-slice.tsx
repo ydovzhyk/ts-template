@@ -8,6 +8,8 @@ const initialState: ITechnicalDataState = {
   error: '',
   message: '',
   optionMenu: [],
+  searchPage: 0,
+  weekPage: 0,
 };
 
 const technicalData = createSlice({
@@ -28,7 +30,13 @@ const technicalData = createSlice({
             store.error = '';
             store.message = '';
             store.listEmail= [];
-        }
+        },
+        saveSearchPage: (store, action) => {
+            store.searchPage = action.payload;
+        },
+        saveWeekPage: (store, action) => {
+            store.weekPage = action.payload;
+        },
     },
 
     extraReducers: (builder) => {
@@ -56,4 +64,6 @@ export const {
   clearTechnicalDataMessage,
   clearTechnicalDataListEmail,
   clearTechnicalDataStore,
+  saveSearchPage,
+  saveWeekPage,
 } = technicalData.actions;

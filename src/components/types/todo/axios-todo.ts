@@ -7,3 +7,7 @@ export interface ICreateTodoResponse {
 export interface ITodosWeekResponse {
     arrayTodosWeek: ITodoServer[];
 }
+
+export interface ITodosSearchResponse {
+    arrayTodosSearch: ITodoServer[];
+}
