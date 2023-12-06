@@ -1,9 +1,9 @@
 import { ITodoSearch } from "../types/todo/todo"
 
-export const buildURL = (searchData: ITodoSearch, searchPage: number, weekPage: number) => { 
+export const buildURL = (searchData: ITodoSearch, searchPage?: number, weekPage?: number) => { 
     const urlParams = new URLSearchParams();
 
-    urlParams.set('type', 'search');
+    // urlParams.set('type', 'search');
 
     if (searchData.searchByPart) {
         urlParams.set('part', searchData.searchByPart);
@@ -25,10 +25,10 @@ export const buildURL = (searchData: ITodoSearch, searchPage: number, weekPage: 
         urlParams.set('members', searchData.searchByOtherMembers);
     }
 
-    if (searchPage > 0) {
+    if (searchPage && searchPage > 0) {
         urlParams.set('searchPage', String(searchPage));
     }
-    if (weekPage > 0) {
+    if (weekPage && weekPage > 0) {
         urlParams.set('weekPage', String(weekPage));
     }
 

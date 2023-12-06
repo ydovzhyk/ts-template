@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { saveSearchPage, saveWeekPage } from '../technical/technical-slice';
 
 import {
   axiosCreateTodo,
@@ -42,7 +43,7 @@ export const getTodosWeek = createAsyncThunk(
   'todo/todosWeek',
   async (_, { rejectWithValue }) => {
     try {
-        const data: ITodosWeekResponse = await axiosTodosWeek();
+      const data: ITodosWeekResponse = await axiosTodosWeek();
         return data;
     } catch (error: any) {
         const { data, status } = error.response || {};
@@ -56,7 +57,7 @@ export const getSearchTodo = createAsyncThunk(
   'todo/search',
   async (userData: ITodoSearch, { rejectWithValue }) => {
     try {
-        const data: ITodosSearchResponse = await axiosSearchTodo(userData);
+      const data: ITodosSearchResponse = await axiosSearchTodo(userData);
         return data;
     } catch (error: any) {
         const { data, status } = error.response || {};

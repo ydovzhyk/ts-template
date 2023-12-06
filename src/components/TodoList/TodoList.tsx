@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/hooks';
 import moment from 'moment';
 import { getTodosWeek } from '../../Redux/todo/todo-operations';
@@ -8,16 +9,20 @@ import { getLogin } from '../../Redux/auth/auth-selectors';
 import { saveArrayTodosWeek } from '../../Redux/todo/todo-slice';
 import { getArrayTodosSearch } from '../../Redux/todo/todo-selectors';
 import { saveSearchPage, saveWeekPage } from '../../Redux/technical/technical-slice';
+import { getSearchPage, getWeekPage } from '../../Redux/technical/technical-selectors';
+
+import { parseURL } from '../helpers/parseURL';
+import { buildURL } from '../helpers/buildURL';
 
 import Container from '../Shared/Container';
 import Text from '../Shared/Text';
 import TodoPreview from '../TodoPreview';
 import Pagination from '../Shared/Pagination';
+import SearchTodo from './SearchTodo';
 
 import { ITodoCreate, ITodoServer } from '../types/todo/todo';
 
 import s from './TodoList.module.scss'
-import SearchTodo from './SearchTodo';
 
 const chunkArray = (array: ITodoServer[],  chunkSize: number) => {
     return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
@@ -27,9 +32,12 @@ const chunkArray = (array: ITodoServer[],  chunkSize: number) => {
 
 const TodoList: React.FC = () => { 
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const userLogin = useSelector(getLogin);
     const arrayTodosWeek = useSelector(getArrayTodosWeek);
     const arrayTodosSearch = useSelector(getArrayTodosSearch);
+    const searchPage = useSelector(getSearchPage);
+    const weekPage = useSelector(getWeekPage);
 
     const itemsPerPage = 3;
     const totalPagesSearch = arrayTodosSearch.length > 0 ? Math.ceil(arrayTodosSearch.length / itemsPerPage) : 0;
@@ -43,11 +51,24 @@ const TodoList: React.FC = () => {
 
     useEffect(() => {
         setCurrentGroupSearchIndex(0);
-    }, [arrayTodosSearch]);
+        if (arrayTodosSearch.length > 0) {
+            dispatch(saveSearchPage(1));
+        }
+    }, [arrayTodosSearch, dispatch]);
 
     useEffect(() => {
         setCurrentGroupWeekIndex(0);
-    }, [arrayTodosWeek]);
+        if (arrayTodosWeek.length > 0) {
+            dispatch(saveWeekPage(1));
+        }
+    }, [arrayTodosWeek, dispatch]);
+
+    //Змінюємо URL при зміні сторінок
+    useEffect(() => {
+        const paramsURL = parseURL();
+        const newUrl = buildURL(paramsURL.urlData, searchPage, weekPage );
+        navigate(newUrl);
+    }, [weekPage, searchPage, navigate]);
 
     useEffect(() => {
         const fetchDataFromLocalStorage = () => {

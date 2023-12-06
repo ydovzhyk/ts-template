@@ -1,4 +1,4 @@
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +18,11 @@ import { getLogin } from '../../../Redux/auth/auth-selectors';
 import { getEmailList } from '../../../Redux/technical/technical-selectors';
 import { getSearchTodo } from '../../../Redux/todo/todo-operations';
 import { saveArrayTodosSearch } from '../../../Redux/todo/todo-slice';
-import { getSearchPage, getWeekPage } from '../../../Redux/technical/technical-selectors';
+import { getWeekPage } from '../../../Redux/technical/technical-selectors';
 
 import { ITodoSearch } from '../../types/todo/todo';
 
 import s from './SearchTodo.module.scss';
-import { saveSearchPage } from '../../../Redux/technical/technical-slice';
 
 const SearchTodo: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -32,7 +31,6 @@ const SearchTodo: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<Moment>(moment());
     const options = useSelector(getOptionMenu);
     const isUserLogin = useSelector(getLogin);
-    const searchPage = useSelector(getSearchPage);
     const weekPage = useSelector(getWeekPage);
 
     const arrayUser = useSelector(getEmailList);
@@ -75,6 +73,8 @@ const SearchTodo: React.FC = () => {
     });
 
     const onSubmit = async (data: ITodoSearch) => {
+        let array;
+        let searchPage = 0;
         const finalData: ITodoSearch = {
             searchByPart: data.searchByPart.value,
             searchByPhrase: data.searchByPhrase,
@@ -85,18 +85,25 @@ const SearchTodo: React.FC = () => {
 
         if (!isUserLogin) {
             const searchArray = await searchLocalStoradge(finalData);
-            await dispatch(saveArrayTodosSearch(searchArray));
+            array = await dispatch(saveArrayTodosSearch(searchArray));
+            console.log(array)
         } else {
-            await dispatch(getSearchTodo(finalData));
+            array = await dispatch(getSearchTodo(finalData));
+        }
+        
+        if (isUserLogin && array.payload.arrayTodosSearch.length > 0) {
+            searchPage = 1;
+        }
+        if (!isUserLogin && array.payload.length > 0) {
+            searchPage = 1;
         }
 
-        const newUrl = await buildURL(finalData, searchPage, weekPage  );
+        const newUrl = await buildURL(finalData, searchPage, weekPage);
         navigate(newUrl);
 
         reset();
         setSelectedUsers([]);
         setIsListVisible(false);
-        dispatch(saveSearchPage(0));
     };
 
     const handleUserSelection = (email: string) => {

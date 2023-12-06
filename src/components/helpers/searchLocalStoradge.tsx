@@ -63,11 +63,7 @@ export const searchLocalStoradge = (searchData: ITodoSearch) => {
         if (filteredTasks.length > 0) {
             return filteredTasks;
         } else {
-            if (tasks.length > 0) {
-                return tasks;
-            } else {
-                return [];
-            }
+            return [];
         }
     }
 };
