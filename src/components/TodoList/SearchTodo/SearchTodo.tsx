@@ -86,7 +86,6 @@ const SearchTodo: React.FC = () => {
         if (!isUserLogin) {
             const searchArray = await searchLocalStoradge(finalData);
             array = await dispatch(saveArrayTodosSearch(searchArray));
-            console.log(array)
         } else {
             array = await dispatch(getSearchTodo(finalData));
         }

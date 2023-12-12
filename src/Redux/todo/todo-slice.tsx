@@ -40,12 +40,19 @@ const todo = createSlice({
             store.message = '';
             store.todoList = [];
             store.arrayTodosWeek = [];
+            store.arrayTodosSearch = [];
         },
         saveArrayTodosWeek: (store, action) => {
             store.arrayTodosWeek = action.payload;
         },
         saveArrayTodosSearch: (store, action) => {
             store.arrayTodosSearch = action.payload;
+        },
+        clearArrayTodosSearch: store => {
+            store.arrayTodosSearch= [];
+        },
+        clearArrayTodosWeek: store => {
+            store.arrayTodosWeek= [];
         }
     },
 
@@ -114,4 +121,6 @@ export const {
   clearTodoStore,
   saveArrayTodosWeek,
   saveArrayTodosSearch,
+  clearArrayTodosSearch,
+  clearArrayTodosWeek,
 } = todo.actions;

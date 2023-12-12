@@ -29,6 +29,11 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
 
     return (
         <div className={s.todo}>
+            <div>
+            <Text
+                text={'Попередній перегляд завдання'}
+                textClass="title-form-list"
+            />
             <div className={s.todoCard}>
                 {dateFrom && dateTo && <div className={s.todoStatus}>
                     <Text
@@ -129,6 +134,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                         textClass="title-form-todo"
                     />
                 </ul>
+                </div>
             </div>
         </div>
     );

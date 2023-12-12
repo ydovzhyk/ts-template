@@ -81,18 +81,36 @@
 //////////////////////////
 .label.createTodo {
   margin-bottom: 0;
+  width: 350px;
+  height: 38px;
+  @include mixins.mq(tablet) {
+    width: 260px;
+    height: 38px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+    height: 48px;
+  }
 }
 
 .input.createTodo {
   margin-bottom: 0px;
   padding-left: 10px;
   width: 350px;
-  height: 48px;
-  line-height: 1;
+  height: 38px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
   background-color: white;
   @include mixins.mq(tablet) {
-    margin-bottom: 0;
+    width: 260px;
+    height: 38px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
     height: 48px;
+    font-size: 16px;
   }
 }
 

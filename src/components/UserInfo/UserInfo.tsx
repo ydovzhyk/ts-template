@@ -60,7 +60,7 @@ const UserInfo: React.FC = () => {
                   <img src={user.userAvatar} alt="Userphoto" className={s.userPhoto} />
                 )}
               </div>
-              <span>{user.username}</span>
+              <span className={s.userName}>{user.username}</span>
             </div>
               <RxDividerVertical
                 size={40}

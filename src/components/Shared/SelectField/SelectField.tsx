@@ -1,5 +1,6 @@
 import React from 'react';
 import Select, { StylesConfig } from 'react-select';
+import { useMediaQuery } from 'react-responsive';
 
 import s from './SelectField.module.scss';
 
@@ -14,13 +15,31 @@ interface ISelectFieldProps {
   defaultValue?: { value: string; label: string };
 }
 
-const customStyles: StylesConfig = {
+const SelectField: React.FC<ISelectFieldProps> = ({
+  name,
+  value,
+  handleChange,
+  placeholder,
+  required,
+  options,
+  className,
+  defaultValue,
+}) => {
+  const labelClass = className ? `${s.label} ${s[className]}` : `${s.label}`;
+  const selectClass = className ? `${s.select} ${s[className]}` : `${s.select}`;
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
+  // const isDesktop = useMediaQuery({ minWidth: 1280 });
+
+  const customStyles: StylesConfig = {
   control: (provided: any, state) => ({
     ...provided,
-    fontSize: '16px',
-    height: '48px',
+    fontSize: isMobile ? '14px' : isTablet ? '15px' : '16px',
+    height: isMobile ? '38px' : isTablet ? '38px' : '48px',
     color: 'var(--second-text-color)',
     pointerEvents: 'auto',
+    borderColor: state.isFocused ? 'white' : provided.borderColor,
   }),
   option: (styles, { isDisabled, isFocused, isSelected }) => {
     const backgroundColor = isSelected
@@ -34,30 +53,22 @@ const customStyles: StylesConfig = {
     return {
         ...styles,
         backgroundColor: isDisabled ? undefined : backgroundColor,
-      color: isDisabled ? '#ccc' : textColor,
-        height: '48px',
-        lineHeight: '2rem',
+        color: isDisabled ? '#ccc' : textColor,
+        height: isMobile ? '38px' : isTablet ? '38px' : '48px',
+        display: 'flex',
+        alignItems: 'center',
         cursor: isDisabled ? 'not-allowed' : 'default',
         ':active': {
             ...styles[':active'],
             backgroundColor: !isDisabled ? isSelected ? 'black' : 'rgba(0, 0, 0, 0.3)' : undefined,
         },
     };
-  }
+    },
+    menu: (provided, state) => ({
+      ...provided,
+      marginTop: isMobile ? '-8px' : isTablet ? '-8px' : '2px',
+    }),
 };
-
-const SelectField: React.FC<ISelectFieldProps> = ({
-  name,
-  value,
-  handleChange,
-  placeholder,
-  required,
-  options,
-  className,
-  defaultValue,
-}) => {
-  const labelClass = className ? `${s.label} ${s[className]}` : `${s.label}`;
-  const selectClass = className ? `${s.select} ${s[className]}` : `${s.select}`;
 
   return (
     <label className={labelClass}>

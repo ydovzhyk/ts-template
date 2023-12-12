@@ -10,9 +10,13 @@ import { saveArrayTodosWeek } from '../../Redux/todo/todo-slice';
 import { getArrayTodosSearch } from '../../Redux/todo/todo-selectors';
 import { saveSearchPage, saveWeekPage } from '../../Redux/technical/technical-slice';
 import { getSearchPage, getWeekPage } from '../../Redux/technical/technical-selectors';
+import { getSearchTodo } from '../../Redux/todo/todo-operations';
+import { saveArrayTodosSearch } from '../../Redux/todo/todo-slice';
+import { clearArrayTodosSearch, clearArrayTodosWeek } from '../../Redux/todo/todo-slice';
 
 import { parseURL } from '../helpers/parseURL';
 import { buildURL } from '../helpers/buildURL';
+import { searchLocalStoradge } from '../helpers/searchLocalStoradge';
 
 import Container from '../Shared/Container';
 import Text from '../Shared/Text';
@@ -20,9 +24,9 @@ import TodoPreview from '../TodoPreview';
 import Pagination from '../Shared/Pagination';
 import SearchTodo from './SearchTodo';
 
-import { ITodoCreate, ITodoServer } from '../types/todo/todo';
+import { ITodoCreate, ITodoServer, ITodoSearch } from '../types/todo/todo';
 
-import s from './TodoList.module.scss'
+import s from './TodoList.module.scss';
 
 const chunkArray = (array: ITodoServer[],  chunkSize: number) => {
     return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
@@ -31,6 +35,8 @@ const chunkArray = (array: ITodoServer[],  chunkSize: number) => {
 };
 
 const TodoList: React.FC = () => { 
+    const vpHeight = window.innerHeight;
+    const [dynamicStyles, setDynamicStyles] = useState({});
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const userLogin = useSelector(getLogin);
@@ -50,40 +56,32 @@ const TodoList: React.FC = () => {
     const currentGroupWeek = chunkedTodosWeek[currentGroupWeekIndex];
 
     useEffect(() => {
+        setDynamicStyles({
+            minHeight: userLogin ? `${vpHeight - 64}px` : `${vpHeight - 64 - 39}px`,
+        });
+    }, [userLogin, vpHeight]);
+
+    useEffect(() => {
+        let arraySearch;
+        let arrayWeek;
+        dispatch(clearArrayTodosSearch());
+        dispatch(clearArrayTodosWeek());
         setCurrentGroupSearchIndex(0);
-        if (arrayTodosSearch.length > 0) {
-            dispatch(saveSearchPage(1));
-        }
-    }, [arrayTodosSearch, dispatch]);
-
-    useEffect(() => {
         setCurrentGroupWeekIndex(0);
-        if (arrayTodosWeek.length > 0) {
-            dispatch(saveWeekPage(1));
-        }
-    }, [arrayTodosWeek, dispatch]);
 
-    //Змінюємо URL при зміні сторінок
-    useEffect(() => {
-        const paramsURL = parseURL();
-        const newUrl = buildURL(paramsURL.urlData, searchPage, weekPage );
-        navigate(newUrl);
-    }, [weekPage, searchPage, navigate]);
-
-    useEffect(() => {
         const fetchDataFromLocalStorage = () => {
             const localStorageData = localStorage.getItem('ts-template_tasks');
             const currentDate = moment();
             if (localStorageData) {
                 const tasksFromLocalStorage = JSON.parse(localStorageData);
-                // Фільтруємо завдання, які потрібно залишити в локальному сховищі
+                // We filter the tasks that need to be left in the local storage
                 const validTodos = tasksFromLocalStorage.filter((todo: ITodoCreate) => {
                     const dueDate = moment(todo.dateTo, "DD.MM.YYYY");
                     const daysUntilDue = dueDate.diff(currentDate, "days");
                     
                     return daysUntilDue >= 0 || todo.saveAfterDeadline;
                 });
-                // Оновлюємо локальне сховище новим масивом завдань
+                // We update the local storage with a new array of tasks
                 localStorage.setItem('ts-template_tasks', JSON.stringify(validTodos));
 
                 const todosThisWeek = validTodos.filter((todo: ITodoCreate) => {
@@ -93,15 +91,95 @@ const TodoList: React.FC = () => {
                     return daysUntilDue >= 0 && daysUntilDue <= 7;
                 });
                 dispatch(saveArrayTodosWeek(todosThisWeek));
+                return todosThisWeek;
             }
         };
 
-        if (userLogin) {
-            dispatch(getTodosWeek());
-        } else {
-            fetchDataFromLocalStorage();
+        const separationOfProcesses = async (urlData: ITodoSearch, weekPage: string | null, searchPage: string | null) => {
+            const searchByPart = urlData.searchByPart;
+            const searchByPhrase = urlData.searchByPhrase;
+            const searchByDate = urlData.searchByDate;
+            const searchByStatus = urlData.searchByStatus;
+            const searchByOtherMembers = urlData.searchByOtherMembers;
+            const numberWeekPage = weekPage ? Number(weekPage) : 0;
+            const numberSearchPage = searchPage ? Number(searchPage) : 0;
+
+            if (searchByPart === '' && searchByPhrase === '' && searchByDate === '' && searchByStatus === '' && searchByOtherMembers === '') {
+                //If we don't have a search url
+                if (userLogin) {
+                    arrayWeek = await dispatch(getTodosWeek()) as any;
+                    if (arrayWeek.payload && arrayWeek.payload.arrayTodosWeek.length > 0) {
+                        dispatch(saveWeekPage(numberWeekPage ? numberWeekPage : 1));
+                        setCurrentGroupWeekIndex(numberWeekPage ? numberWeekPage - 1 : 0);
+                    } else {
+                        dispatch(saveWeekPage(0));
+                        setCurrentGroupWeekIndex(0);
+                    }
+                } else {
+                    arrayWeek = fetchDataFromLocalStorage();
+                    if (arrayWeek.length > 0) {
+                        dispatch(saveWeekPage(numberWeekPage ? numberWeekPage : 1));
+                        setCurrentGroupWeekIndex(numberWeekPage ? numberWeekPage - 1 : 0);
+                    } else {
+                        dispatch(saveWeekPage(0));
+                        setCurrentGroupWeekIndex(0);
+                    }
+                }
+            } else {
+                //If we have a search url
+                const finalData: ITodoSearch = { searchByPart, searchByPhrase, searchByDate, searchByStatus, searchByOtherMembers };
+                if (userLogin) {
+                    arrayWeek = await dispatch(getTodosWeek()) as any;
+                    if (arrayWeek.payload && arrayWeek.payload.arrayTodosWeek.length > 0) {
+                        dispatch(saveWeekPage(numberWeekPage ? numberWeekPage : 1));
+                        setCurrentGroupWeekIndex(numberWeekPage ? numberWeekPage - 1 : 0);
+                    } else {
+                        dispatch(saveWeekPage(0));
+                        setCurrentGroupWeekIndex(0);
+                    }
+
+                    arraySearch = await dispatch(getSearchTodo(finalData)) as any;
+                    if (arraySearch.payload && arraySearch.payload.arrayTodosSearch.length > 0) {
+                        dispatch(saveSearchPage(numberSearchPage ? numberSearchPage : 1));
+                        setCurrentGroupSearchIndex(numberSearchPage ? numberSearchPage - 1 : 0);
+                    } else {
+                        dispatch(saveSearchPage(0));
+                        setCurrentGroupSearchIndex(0);
+                    }
+                } else {
+                    arrayWeek = fetchDataFromLocalStorage();
+                    if (arrayWeek.length > 0) {
+                        dispatch(saveWeekPage(numberWeekPage ? numberWeekPage : 1));
+                        setCurrentGroupWeekIndex(numberWeekPage ? numberWeekPage - 1 : 0);
+                    } else {
+                        dispatch(saveWeekPage(0));
+                        setCurrentGroupWeekIndex(0);
+                    }
+                    
+                    arraySearch = await searchLocalStoradge(finalData);
+                    await dispatch(saveArrayTodosSearch(arraySearch));
+                    if (arraySearch && arraySearch.length > 0) {
+                        dispatch(saveSearchPage(numberSearchPage ? numberSearchPage : 1));
+                        setCurrentGroupSearchIndex(numberSearchPage ? numberSearchPage - 1 : 0);
+                    } else {
+                        dispatch(saveSearchPage(0));
+                        setCurrentGroupSearchIndex(0);
+                    }
+                }
+            }
         }
+        
+        const { urlData, weekPage, searchPage } = parseURL();
+            separationOfProcesses(urlData, weekPage, searchPage);
+
     }, [dispatch, userLogin]);
+
+    //We change the URL when changing week or search pages
+    useEffect(() => {
+        const paramsURL = parseURL();
+        const newUrl = buildURL(paramsURL.urlData, searchPage, weekPage );
+        navigate(newUrl);
+    }, [weekPage, searchPage, navigate]);
 
     const handlePageChange = (pageIndex: number, type: string) => {
         if (type === "search") {
@@ -114,7 +192,7 @@ const TodoList: React.FC = () => {
     };
 
     return (
-        <section className={s.todoList}>
+        <section className={s.todoList} style={dynamicStyles}>
             <Container>
                 <div>
                     {arrayTodosWeek.length > 0 &&
@@ -123,13 +201,13 @@ const TodoList: React.FC = () => {
                                 text={`Завдання, які потрібно завершити в наступні 7 днів (${arrayTodosWeek.length} шт)`}
                                 textClass="title-form-list"
                             />
-                            <ul className={s.todosGroupWeek}>
+                            {currentGroupWeek && <ul className={s.todosGroupWeek}>
                                 {currentGroupWeek.map((todo: ITodoServer) => (
                                     <li key={todo._id}>
                                         <TodoPreview {...todo} />
                                     </li>
                                 ))}
-                            </ul>
+                            </ul>}
                             <div>
                                 {totalPagesWeek > 0 && (<Pagination
                                     totalPages={totalPagesWeek}
@@ -155,13 +233,13 @@ const TodoList: React.FC = () => {
                 <div>
                 {arrayTodosSearch.length > 0 && (
                     <>
-                        <ul className={s.todosGroupSearch}>
+                        { currentGroupSearch && <ul className={s.todosGroupSearch}>
                             {currentGroupSearch.map((todo: ITodoServer) => (
                                 <li key={todo._id}>
                                     <TodoPreview {...todo} />
                                 </li>
                             ))}
-                        </ul>
+                        </ul>}
                         <div>
                             {totalPagesSearch > 0 && (<Pagination
                                 totalPages={totalPagesSearch}

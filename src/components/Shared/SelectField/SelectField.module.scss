@@ -30,31 +30,47 @@
   }
 }
 
-.label.createTodo {
-  position: relative;
-  display: inline-block;
-  height: 48px;
-}
-
-.select.createTodo {
-  margin-bottom: 0px;
-  @include mixins.mq(tablet) {
-    width: 350px;
-  }
-}
-
 .spanClass {
   position: absolute;
-  top: 1px;
+  top: 50%;
   left: 10px;
-  display: inline-block;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
   width: 150px;
-  margin-top: 15px;
   font-size: 14px;
   color: var(--second-text-input-color);
   transition: all var(--transition-duration) var(--timing-function);
   pointer-events: none;
+
   @include mixins.mq(tablet) {
+    height: 38px;
+    font-size: 15px;
+  }
+
+  @include mixins.mq(desktop) {
+    height: 48px;
     font-size: 16px;
+  }
+}
+
+.label.createTodo {
+  height: 38px;
+  @include mixins.mq(tablet) {
+    height: 38px;
+  }
+  @include mixins.mq(desktop) {
+    height: 48px;
+  }
+}
+
+.select.createTodo {
+  margin-bottom: 0px;
+  width: 350px;
+  @include mixins.mq(tablet) {
+    width: 260px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
   }
 }

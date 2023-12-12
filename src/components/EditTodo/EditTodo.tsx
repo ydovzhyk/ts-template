@@ -35,6 +35,9 @@ interface EditTodoProps {
 
 const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
 
+    const vpHeight = window.innerHeight;
+    const [dynamicStyles, setDynamicStyles] = useState({});
+
     const selectedUsersInitial = todoData?.otherMembers ? [todoData.otherMembers] : [];
     const additionalInfoInitial = todoData?.additionalInfo ? todoData.additionalInfo : '';
     const dateFromInitial = todoData?.dateFrom ? todoData.dateFrom : '';
@@ -68,6 +71,12 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
         saveAfterDeadline: saveAfterDeadlineInitial,
     }
     const [previewData, setPreviewData] = useState<ITodoProps>(initialState);
+
+    useEffect(() => {
+        setDynamicStyles({
+            height: isUserLogin ? `${vpHeight - 64}px` : `${vpHeight - 64 - 39}px`,
+        });
+    }, [isUserLogin, vpHeight]);
 
     useEffect(() => {
         if (!todoData || !Object.keys(todoData).length) {
@@ -182,7 +191,7 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
     };
 
     return (
-    <section className={s.createTodo}>
+    <section className={s.createTodo} style={dynamicStyles}>
         <Container>
             <div className={s.todoPart}>
                 <div className={s.create}>

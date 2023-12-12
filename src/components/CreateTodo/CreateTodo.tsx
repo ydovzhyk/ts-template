@@ -28,6 +28,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import s from './CreateTodo.module.scss';
 
 const CreateTodo: React.FC = () => {
+    const vpHeight = window.innerHeight;
+    const [dynamicStyles, setDynamicStyles] = useState({});
     const dispatch = useAppDispatch();
     const isUserLogin = useSelector(getLogin);
     const arrayUser = useSelector(getEmailList);
@@ -55,6 +57,12 @@ const CreateTodo: React.FC = () => {
             updatePreviewField('otherMembers', '');
         }
     }, [selectedUsers]);
+
+    useEffect(() => {
+        setDynamicStyles({
+            height: isUserLogin ? `${vpHeight - 64}px` : `${vpHeight - 64}px`,
+        });
+    }, [isUserLogin, vpHeight]);
 
     const updatePreviewField = (fieldName: string, value: any) => {
         if (fieldName === 'dateFrom') {
@@ -148,7 +156,7 @@ const CreateTodo: React.FC = () => {
     };
 
     return (
-    <section className={s.createTodo}>
+    <section className={s.createTodo} style={dynamicStyles}>
         <Container>
             <div className={s.todoPart}>
                 <div className={s.create}>
@@ -326,7 +334,7 @@ const CreateTodo: React.FC = () => {
                     </form>
                 </div>
                 <div className={s.preview}>
-                    <Todo {...previewData}/>
+                    {/* <Todo {...previewData}/> */}
                 </div>
                 </div>
                 {message && (

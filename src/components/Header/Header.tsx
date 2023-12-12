@@ -1,9 +1,13 @@
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { getLogin } from '../../Redux/auth/auth-selectors';
 import UserInfo from '../UserInfo';
+import Text from '../Shared/Text';
 
 import s from './Header.module.scss';
 
 const Header: React.FC = () => {
+    const isUserLogin = useSelector(getLogin);
 
     const customClassName = (active: boolean) => {
         if (active) {
@@ -27,9 +31,14 @@ const Header: React.FC = () => {
                     </div>
                     <div className={s.authSection}>
                         <UserInfo />
-                        {/* <Text text={'AUTHORIZE'} textClass="title" /> */}
                     </div>
                 </div>
+                {!isUserLogin && (
+                    <Text
+                        text={'Зареєструйтесь, щоб отримати доступ до ваших завдань на різних пристроях'}
+                        textClass="warningTitle"
+                    />
+                )}
             </div>
         </header>
     )

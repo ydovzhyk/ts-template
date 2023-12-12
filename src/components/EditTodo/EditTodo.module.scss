@@ -1,11 +1,15 @@
 @use '../../styles/mixins';
 
 .createTodo {
-  padding-bottom: 80px;
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url(../../images/Auth/bg-register.jpg);
   background-size: cover;
-  height: 100vh;
+  background-position: center;
+  background-attachment: fixed;
+  justify-content: space-around;
   @include mixins.mq(tablet) {
     background-repeat: no-repeat;
   }

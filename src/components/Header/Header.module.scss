@@ -1,6 +1,9 @@
 @use '../../styles/mixins';
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   background-color: var(--bg-footer-header);
   z-index: 999;
@@ -13,8 +16,14 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1280px;
+  max-width: 480px;
   margin: 0 auto 0px auto;
+  @include mixins.mq(tablet) {
+    max-width: 768px;
+  }
+  @include mixins.mq(desktop) {
+    max-width: 1280px;
+  }
 }
 
 .group {
@@ -45,7 +54,7 @@
   }
   font-size: 14px;
   @include mixins.mq(tablet) {
-    font-size: 16px;
+    font-size: 15px;
   }
   &::before {
     content: '';
@@ -63,6 +72,9 @@
     &::before {
       width: 100%;
     }
+  }
+  @include mixins.mq(desctop) {
+    font-size: 16px;
   }
 }
 
