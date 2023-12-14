@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { saveSearchPage, saveWeekPage } from '../technical/technical-slice';
 
 import {
   axiosCreateTodo,

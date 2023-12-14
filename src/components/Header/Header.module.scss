@@ -73,7 +73,7 @@
       width: 100%;
     }
   }
-  @include mixins.mq(desctop) {
+  @include mixins.mq(desktop) {
     font-size: 16px;
   }
 }

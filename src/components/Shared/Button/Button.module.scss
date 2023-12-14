@@ -4,16 +4,15 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 196px;
-  height: 50px;
+  width: 157px;
+  height: 40px;
   background-color: var(--background-btn-main-color);
   border: 1px solid var(--btn-border-color);
   color: var(--btn-text-color);
-  // color: #000;
   border-radius: 10.3108px;
   font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 22px;
   transition: background-color var(--transition-duration) var(--timing-function),
     color var(--transition-duration) var(--timing-function),
@@ -24,6 +23,16 @@
     border-color: var(--btn-border-color);
     box-shadow: var(--hover-box-shadow);
     color: var(--hover-btn-text);
+  }
+  @include mixins.mq(tablet) {
+    width: 157px;
+    height: 40px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    width: 196px;
+    height: 50px;
+    font-size: 16px;
   }
 }
 
@@ -56,7 +65,7 @@
   @include mixins.mq(tablet) {
     font-size: 15px;
   }
-  @include mixins.mq(desctop) {
+  @include mixins.mq(desktop) {
     font-size: 16px;
   }
 }

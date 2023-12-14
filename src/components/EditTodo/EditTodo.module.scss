@@ -1,6 +1,6 @@
 @use '../../styles/mixins';
 
-.createTodo {
+.editTodo {
   margin-top: 64px;
   display: flex;
   flex-direction: column;
@@ -16,23 +16,32 @@
 }
 
 .todoPart {
+  margin-top: auto;
+  margin-bottom: auto;
   display: flex;
   flex-direction: row;
 }
 
 .textarea {
   width: 350px;
-  font-weight: 400;
   padding-left: 10px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 16px;
+  padding-right: 10px;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--second-text-color);
   background-color: var(--background-color);
   border-color: var(--border-color);
   &:focus {
     border-color: black;
+  }
+  @include mixins.mq(tablet) {
+    width: 260px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+    font-size: 16px;
   }
 }
 
@@ -79,30 +88,55 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  top: calc(100vh / 2 - 300px);
-  left: calc(100vw / 2 - 300px);
-  width: 600px;
-  height: 600px;
+  top: calc(100vh / 2 - 200px);
+  left: calc(100vw / 2 - 150px);
+  width: 300px;
+  height: 400px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url(../../images/Auth/bg-register.jpg);
   box-shadow: 10px 10px 30px rgba(82, 85, 95, 0.4);
   border-radius: 30px;
   z-index: 1200;
+
+  @include mixins.mq(tablet) {
+    top: calc(100vh / 2 - 300px);
+    left: calc(100vw / 2 - 175px);
+    width: 350px;
+    height: 600px;
+  }
+  @include mixins.mq(desktop) {
+    top: calc(100vh / 2 - 300px);
+    left: calc(100vw / 2 - 200px);
+    width: 400px;
+    height: 600px;
+  }
 }
 
 .modalBorder {
-  width: 590px;
-  height: 590px;
-  padding: 40px;
-  padding-top: 65px;
+  width: 300px;
+  height: 400px;
+  padding: 10px;
+  padding-top: 55px;
   border-radius: 30px;
   border: 2px solid var(--bg-footer-header);
+  @include mixins.mq(tablet) {
+    padding: 20px;
+    padding-top: 55px;
+    width: 350px;
+    height: 600px;
+  }
+  @include mixins.mq(desktop) {
+    padding: 20px;
+    padding-top: 60px;
+    width: 400px;
+    height: 600px;
+  }
 }
 
 .dismissButton {
   position: absolute;
-  top: 25px;
-  right: 25px;
+  top: 15px;
+  right: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,20 +150,40 @@
 
 .userListShow {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-right: 10px;
   padding-left: 10px;
-  padding-top: 15px;
-  padding-bottom: 15px;
   width: 350px;
-  min-height: 48px;
+  min-height: 38px;
   background-color: var(--bg-footer-header);
+  @include mixins.mq(tablet) {
+    width: 260px;
+    min-height: 38px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+    min-height: 48px;
+  }
 }
 
-.create {
+.edit {
   width: 50%;
+  @include mixins.mq(tablet) {
+    width: 39%;
+  }
+  @include mixins.mq(desktop) {
+    width: 50%;
+  }
 }
 .preview {
   width: 50%;
+  @include mixins.mq(tablet) {
+    width: 61%;
+  }
+  @include mixins.mq(desktop) {
+    width: 50%;
+  }
 }
 
 .checkbox {
@@ -137,6 +191,16 @@
   height: 20px;
   cursor: pointer;
   accent-color: var(--bg-footer-header);
+}
+
+.checkboxDiv {
+  width: 350px;
+  @include mixins.mq(tablet) {
+    width: 260px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+  }
 }
 
 .wrap {

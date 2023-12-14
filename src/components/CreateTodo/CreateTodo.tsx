@@ -282,7 +282,7 @@ const CreateTodo: React.FC = () => {
                         <div className={s.userListShow}>
                             <Text
                                 text={selectedUsers.join(', ')}
-                                textClass="hidenInput"
+                                textClass="hidenInputCreateTodo"
                             />
                         </div>
                         <div className={s.addUserGroup}> 
@@ -291,7 +291,7 @@ const CreateTodo: React.FC = () => {
                             </div>  
                             <Text
                                 text={!showUsersList ? 'Додати користувачів' : 'Обрати користувачів'}
-                                textClass="title-form"
+                                textClass="title-form-add-user"
                             /> 
                         </div>
                             {showUsersList && <div className={s.modal}>
@@ -315,7 +315,7 @@ const CreateTodo: React.FC = () => {
                             control={control}
                             name="saveAfterDeadline"
                             render={({ field: { onChange, value } }) => (
-                            <div>
+                            <div className={s.checkboxDiv}>
                                 <input
                                     type="checkbox"
                                     className={s.checkbox}
@@ -334,7 +334,7 @@ const CreateTodo: React.FC = () => {
                     </form>
                 </div>
                 <div className={s.preview}>
-                    {/* <Todo {...previewData}/> */}
+                    <Todo {...previewData}/>
                 </div>
                 </div>
                 {message && (

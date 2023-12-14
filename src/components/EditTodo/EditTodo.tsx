@@ -191,10 +191,10 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
     };
 
     return (
-    <section className={s.createTodo} style={dynamicStyles}>
+    <section className={s.editTodo} style={dynamicStyles}>
         <Container>
             <div className={s.todoPart}>
-                <div className={s.create}>
+                <div className={s.edit}>
                     <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
                         <Text
                             text={'Розділ'}
@@ -298,7 +298,6 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                             <textarea
                                 className={`${s.textarea} ${s.scroll}`}
                                 value={value}
-                                    // onChange={onChange}
                                 onChange={(e) => {
                                     onChange(e.target.value);
                                     updatePreviewField('additionalInfo', e.target.value);
@@ -317,7 +316,7 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                         <div className={s.userListShow}>
                             <Text
                                 text={selectedUsers.join(', ')}
-                                textClass="hidenInput"
+                                textClass="hidenInputCreateTodo"
                             />
                         </div>
                         <div className={s.addUserGroup}> 
@@ -326,7 +325,7 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                             </div>  
                             <Text
                                 text={!showUsersList ? 'Додати користувачів' : 'Обрати користувачів'}
-                                textClass="title-form"
+                                textClass="title-form-add-user"
                             /> 
                         </div>
                             {showUsersList && <div className={s.modal}>

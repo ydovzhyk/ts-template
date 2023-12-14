@@ -46,7 +46,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                 </div>}
                 <ul className={s.cardBorder}>
                     <li className={s.cardGroup}>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Розділ'}
                                 textClass="title-form-todo"
@@ -54,11 +54,11 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                             <div className={s.partData}>
                                 <Text
                                     text={part}
-                                    textClass="hidenInput"
+                                    textClass="hidenInputTodo"
                                 />
                             </div>
                         </div>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Дата початку'}
                                 textClass="title-form-todo"
@@ -72,7 +72,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                         </div>
                     </li>
                     <li className={s.cardGroup}>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Тема'}
                                 textClass="title-form-todo"
@@ -84,7 +84,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                                 />
                             </div>
                         </div>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Дата закінчення'}
                                 textClass="title-form-todo"
@@ -98,7 +98,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                         </div>
                     </li>
                     <li className={s.cardGroup}>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Додаткова інформація'}
                                 textClass="title-form-todo"
@@ -114,7 +114,7 @@ const Todo: React.FC<ITodoProps> = ({ additionalInfo, dateFrom, dateTo, otherMem
                         </div>
                     </li>
                     {otherMembers && <li className={s.cardGroup}>
-                        <div className={s.partGroup}>
+                        <div>
                             <Text
                                 text={'Користувачі спільного завдання'}
                                 textClass="title-form-todo"
