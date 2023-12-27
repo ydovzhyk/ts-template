@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../hooks/hooks';
+import { useMediaQuery } from 'react-responsive';
 import { getLogin, getUser } from '../../Redux/auth/auth-selectors'
 import { clearTodoStore } from '../../Redux/todo/todo-slice';
 
@@ -13,6 +14,7 @@ import Button from '../Shared/Button';
 import s from './UserInfo.module.scss';
 
 const UserInfo: React.FC = () => {
+    const isMobile = useMediaQuery({ maxWidth: 767 });
     const isUserLogin = useSelector(getLogin);
     const user = useSelector(getUser);
     const navigate = useNavigate();
@@ -28,7 +30,7 @@ const UserInfo: React.FC = () => {
     navigate('/auth/login');
   }
 
-    if (!isUserLogin) {
+    if (!isUserLogin || isMobile) {
     return (
       <div className={s.userInfoSide}>
         <div className={s.userWrapper}>
@@ -41,16 +43,18 @@ const UserInfo: React.FC = () => {
               }}
             />
             <Button
-              text="Вхід"
+              text={isMobile && isUserLogin ? 'Вихід' : 'Вхід'}
               type="button"
-              handleClick={onLogin}
+              handleClick={isMobile && isUserLogin ? onLogout : onLogin}
               btnClass="exitHeaderBtn"
             />
           </div>
         </div>
       </div>
     );
-  } else {
+  }
+
+  if (isUserLogin && !isMobile) {
     return (
         <div className={s.userInfoSide}>
           <div className={s.userWrapper}>
@@ -87,6 +91,7 @@ const UserInfo: React.FC = () => {
         </div>
     );
   }
+  return null;
 }
 
 export default UserInfo;

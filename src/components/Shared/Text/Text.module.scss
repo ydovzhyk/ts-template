@@ -171,6 +171,22 @@
   }
 }
 
+.title-form-todo-edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 100px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--main-color);
+  @include mixins.mq(tablet) {
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    font-size: 16px;
+  }
+}
+
 .title-form-todo-preview {
   max-width: 290px;
   padding-top: 5px;
@@ -266,13 +282,25 @@
 }
 
 .list-users {
+  display: flex;
+  align-items: center;
   padding-left: 10px;
-  padding-top: 12px;
-  padding-bottom: 12px;
   width: 350px;
-  min-height: 48px;
+  min-height: 38px;
   height: auto;
   white-space: pre-wrap;
   line-height: 1.5;
+  font-weight: 400;
+  font-size: 14px;
   background-color: white;
+  @include mixins.mq(tablet) {
+    width: 260px;
+    min-height: 38px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+    min-height: 48px;
+    font-size: 16px;
+  }
 }

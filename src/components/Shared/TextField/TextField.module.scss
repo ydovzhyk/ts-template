@@ -163,18 +163,33 @@
 //////////////////////////
 .label.searchIST {
   margin-bottom: 0;
+  height: 38px;
   @include mixins.mq(tablet) {
     margin-bottom: 0px !important;
+    height: 38px;
+  }
+  @include mixins.mq(desktop) {
+    height: 48px;
   }
 }
 
 .input.searchIST {
+  margin-bottom: 0;
   padding-left: 10px;
   width: 350px;
-  height: 48px;
+  height: 38px;
   line-height: 1;
+  font-weight: 400;
+  font-size: 14px;
   @include mixins.mq(tablet) {
+    width: 260px;
+    height: 38px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
     height: 48px;
+    font-size: 16px;
   }
 }
 
@@ -187,8 +202,18 @@
 .span.searchIST {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 5px;
   padding-top: 1px;
+  font-weight: 400;
+  font-size: 14px;
+  @include mixins.mq(tablet) {
+    margin-top: 5px;
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    margin-top: 10px;
+    font-size: 16px;
+  }
 }
 
 .searchIST.input:focus + span {

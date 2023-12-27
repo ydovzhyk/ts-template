@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/hooks';
+import { useMediaQuery } from 'react-responsive';
 import moment from 'moment';
 import { getTodosWeek } from '../../Redux/todo/todo-operations';
 import { getArrayTodosWeek } from '../../Redux/todo/todo-selectors';
@@ -45,7 +46,11 @@ const TodoList: React.FC = () => {
     const searchPage = useSelector(getSearchPage);
     const weekPage = useSelector(getWeekPage);
 
-    const itemsPerPage = 3;
+    const isMobile = useMediaQuery({ maxWidth: 767 });
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
+    const isDesktop = useMediaQuery({ minWidth: 1280 });
+
+    let itemsPerPage = isTablet ? 2 : 3;
     const totalPagesSearch = arrayTodosSearch.length > 0 ? Math.ceil(arrayTodosSearch.length / itemsPerPage) : 0;
     const totalPagesWeek = arrayTodosWeek.length > 0 ? Math.ceil(arrayTodosWeek.length / itemsPerPage) : 0;
     const [currentGroupSearchIndex, setCurrentGroupSearchIndex] = useState(0);
@@ -201,7 +206,7 @@ const TodoList: React.FC = () => {
                                 text={`Завдання, які потрібно завершити в наступні 7 днів (${arrayTodosWeek.length} шт)`}
                                 textClass="title-form-list"
                             />
-                            {currentGroupWeek && <ul className={s.todosGroupWeek}>
+                            {currentGroupWeek && <ul className={s.todosGroup}>
                                 {currentGroupWeek.map((todo: ITodoServer) => (
                                     <li key={todo._id}>
                                         <TodoPreview {...todo} />
@@ -233,7 +238,7 @@ const TodoList: React.FC = () => {
                 <div>
                 {arrayTodosSearch.length > 0 && (
                     <>
-                        { currentGroupSearch && <ul className={s.todosGroupSearch}>
+                        { currentGroupSearch && <ul className={s.todosGroup}>
                             {currentGroupSearch.map((todo: ITodoServer) => (
                                 <li key={todo._id}>
                                     <TodoPreview {...todo} />
@@ -249,9 +254,6 @@ const TodoList: React.FC = () => {
                         </div>
                     </>
                 )}
-                </div>
-                <div>
-
                 </div>
             </div>
         </Container>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { useMediaQuery } from 'react-responsive';
 import moment, { Moment } from 'moment';
 import { useAppDispatch } from '../../hooks/hooks';
 import { createTodo } from '../../Redux/todo/todo-operations';
@@ -49,6 +50,11 @@ const CreateTodo: React.FC = () => {
         saveAfterDeadline: false,
     }
     const [previewData, setPreviewData] = useState<ITodoProps>(initialState);
+    const [isShowPreviewInMobile, setIsShowPreviewInMobile] = useState(false);
+
+    const isMobile = useMediaQuery({ maxWidth: 767 });
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
+    const isDesktop = useMediaQuery({ minWidth: 1280 });
 
     useEffect(() => {
         if (selectedUsers.length > 0) {
@@ -155,188 +161,203 @@ const CreateTodo: React.FC = () => {
         return () => clearTimeout(timeoutId);
     };
 
+    const handlePreviewButtonClick = () => {
+        setIsShowPreviewInMobile(!isShowPreviewInMobile);
+    };
+
     return (
     <section className={s.createTodo} style={dynamicStyles}>
         <Container>
             <div className={s.todoPart}>
                 <div className={s.create}>
-                    <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
-                        <Text
-                            text={'Розділ'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="part"
-                            rules={{ required: true}}
-                            render={({ field: {onChange, value}, fieldState }) => (
-                            <SelectField
-                                value={value}
-                                // handleChange={onChange}
-                                handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('part', newValue);
-                                }}
-                                name="part"
-                                className="createTodo"
-                                placeholder="Оберіть опцію"
-                                required={true}
-                                options={options}
+                        <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
+                            <Text
+                                text={'Розділ'}
+                                textClass="title-form"
                             />
-                            )}
-                        />
-                        <Text
-                            text={'Тема'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="subject"
-                            rules={{ required: true}}
-                            render={({ field: {onChange, value}, fieldState }) => (
-                            <TextField
-                                value={value}
+                            <Controller
                                 control={control}
-                                className="createTodo"
-                                // handleChange={onChange}
-                                handleChange={(e) => {
-                                    const newValue = e.target.value;
-                                    onChange(newValue);
-                                    updatePreviewField('subject', newValue);
-                                    }}
-                                error={fieldState.error}
-                                {...fields.subject}
-                            />
-                            )}
-                        />
-                        <Text
-                            text={'Дата початку'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="dateFrom"
-                            rules={{ required: true}}
-                            render={({ field: {onChange}}) => (
-                            <Calendar
-                                dateFormat="dd.MM.yyyy" 
-                                showMonthYearPicker={false} 
-                                value={selectedDateFrom.toDate()} 
-                                // handleChange={onChange}
-                                handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('dateFrom', newValue);
-                                }}
-                            />
-                            )}
-                        />
-                        <Text
-                            text={'Дата завершення'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="dateTo"
-                            rules={{ required: true}}
-                            render={({ field: {onChange}}) => (
-                            <Calendar
-                                dateFormat="dd.MM.yyyy" 
-                                showMonthYearPicker={false} 
-                                value={selectedDateTo.toDate()} 
-                                // handleChange={onChange}
-                                handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('dateTo', newValue);
-                                }}
-                            />
-                            )}
-                        />
-                        <Text
-                            text={'Додаткова інформація'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="additionalInfo"
-                            rules={{ required: false}}
-                            render={({ field: {onChange, value}, fieldState }) => (
-                            <textarea
-                                className={`${s.textarea} ${s.scroll}`}
-                                value={value}
-                                    // onChange={onChange}
-                                onChange={(e) => {
-                                    onChange(e.target.value);
-                                    updatePreviewField('additionalInfo', e.target.value);
-                                }}
-                                rows={3}
-                                cols={40}
-                            />
-                            )}
-                        />
-                            {isUserLogin && 
-                                <>
-                        <Text
-                            text={'Користувачі з яким ви хочете поділитися завданням'}
-                            textClass="title-form"
-                        />
-                        <div className={s.userListShow}>
-                            <Text
-                                text={selectedUsers.join(', ')}
-                                textClass="hidenInputCreateTodo"
-                            />
-                        </div>
-                        <div className={s.addUserGroup}> 
-                            <div className={s.addUser} onClick={handleAddUsersClick}>   
-                                <FaPlus size={20} color='white' /> 
-                            </div>  
-                            <Text
-                                text={!showUsersList ? 'Додати користувачів' : 'Обрати користувачів'}
-                                textClass="title-form-add-user"
-                            /> 
-                        </div>
-                            {showUsersList && <div className={s.modal}>
-                                <div className={s.modalBorder}>
-                                    <button className={s.dismissButton} onClick={handleAddUsersClick }>
-                                        <FontAwesomeIcon icon={faTimes} size="lg" color='white' />
-                                    </button>
-                                    <UserList
-                                        arrayUser={arrayUser}
-                                        selectedUsers={selectedUsers}
-                                        setSelectedUsers={setSelectedUsers}
+                                name="part"
+                                rules={{ required: true }}
+                                render={({ field: { onChange, value }, fieldState }) => (
+                                    <SelectField
+                                        value={value}
+                                        // handleChange={onChange}
+                                        handleChange={(newValue) => {
+                                            onChange(newValue);
+                                            updatePreviewField('part', newValue);
+                                        }}
+                                        name="part"
+                                        className="createTodo"
+                                        placeholder="Оберіть опцію"
+                                        required={true}
+                                        options={options}
                                     />
+                                )}
+                            />
+                            <Text
+                                text={'Тема'}
+                                textClass="title-form"
+                            />
+                            <Controller
+                                control={control}
+                                name="subject"
+                                rules={{ required: true }}
+                                render={({ field: { onChange, value }, fieldState }) => (
+                                    <TextField
+                                        value={value}
+                                        control={control}
+                                        className="createTodo"
+                                        // handleChange={onChange}
+                                        handleChange={(e) => {
+                                            const newValue = e.target.value;
+                                            onChange(newValue);
+                                            updatePreviewField('subject', newValue);
+                                        }}
+                                        error={fieldState.error}
+                                        {...fields.subject}
+                                    />
+                                )}
+                            />
+                            <Text
+                                text={'Дата початку'}
+                                textClass="title-form"
+                            />
+                            <Controller
+                                control={control}
+                                name="dateFrom"
+                                rules={{ required: true }}
+                                render={({ field: { onChange } }) => (
+                                    <Calendar
+                                        dateFormat="dd.MM.yyyy"
+                                        showMonthYearPicker={false}
+                                        value={selectedDateFrom.toDate()}
+                                        // handleChange={onChange}
+                                        handleChange={(newValue) => {
+                                            onChange(newValue);
+                                            updatePreviewField('dateFrom', newValue);
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Text
+                                text={'Дата завершення'}
+                                textClass="title-form"
+                            />
+                            <Controller
+                                control={control}
+                                name="dateTo"
+                                rules={{ required: true }}
+                                render={({ field: { onChange } }) => (
+                                    <Calendar
+                                        dateFormat="dd.MM.yyyy"
+                                        showMonthYearPicker={false}
+                                        value={selectedDateTo.toDate()}
+                                        // handleChange={onChange}
+                                        handleChange={(newValue) => {
+                                            onChange(newValue);
+                                            updatePreviewField('dateTo', newValue);
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Text
+                                text={'Додаткова інформація'}
+                                textClass="title-form"
+                            />
+                            <Controller
+                                control={control}
+                                name="additionalInfo"
+                                rules={{ required: false }}
+                                render={({ field: { onChange, value }, fieldState }) => (
+                                    <textarea
+                                        className={`${s.textarea} ${s.scroll}`}
+                                        value={value}
+                                        // onChange={onChange}
+                                        onChange={(e) => {
+                                            onChange(e.target.value);
+                                            updatePreviewField('additionalInfo', e.target.value);
+                                        }}
+                                        rows={3}
+                                        cols={40}
+                                    />
+                                )}
+                            />
+                            {isUserLogin &&
+                                <>
+                                    <Text
+                                        text={'Користувачі з яким ви хочете поділитися завданням'}
+                                        textClass="title-form"
+                                    />
+                                    <div className={s.userListShow}>
+                                        <Text
+                                            text={selectedUsers.join(', ')}
+                                            textClass="hidenInputCreateTodo"
+                                        />
+                                    </div>
+                                    <div className={s.addUserGroup}>
+                                        <div className={s.addUser} onClick={handleAddUsersClick}>
+                                            <FaPlus size={20} color='white' />
+                                        </div>
+                                        <Text
+                                            text={!showUsersList ? 'Додати користувачів' : 'Обрати користувачів'}
+                                            textClass="title-form-add-user"
+                                        />
+                                    </div>
+                                    {showUsersList && <div className={s.modal}>
+                                        <div className={s.modalBorder}>
+                                            <button className={s.dismissButton} onClick={handleAddUsersClick}>
+                                                <FontAwesomeIcon icon={faTimes} size="lg" color='white' />
+                                            </button>
+                                            <UserList
+                                                arrayUser={arrayUser}
+                                                selectedUsers={selectedUsers}
+                                                setSelectedUsers={setSelectedUsers}
+                                            />
+                                        </div>
+                                    </div>}
+                                </>}
+                            <Text
+                                text={'Зберігати завдання після закінчення терміну виконання'}
+                                textClass="title-form"
+                            />
+                            <Controller
+                                control={control}
+                                name="saveAfterDeadline"
+                                render={({ field: { onChange, value } }) => (
+                                    <div className={s.checkboxDiv}>
+                                        <input
+                                            type="checkbox"
+                                            className={s.checkbox}
+                                            checked={value}
+                                            onChange={(e) => {
+                                                onChange(e.target.checked);
+                                                updatePreviewField('saveAfterDeadline', e.target.checked)
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <div className={s.btnPart}>
+                                <div className={s.wrap}>
+                                    <Button text="Створити" btnClass="btnLight" />
                                 </div>
-                            </div>}
-                            </>}  
-                        <Text
-                            text={'Зберігати завдання після закінчення терміну виконання'}
-                            textClass="title-form"
-                        />
-                        <Controller
-                            control={control}
-                            name="saveAfterDeadline"
-                            render={({ field: { onChange, value } }) => (
-                            <div className={s.checkboxDiv}>
-                                <input
-                                    type="checkbox"
-                                    className={s.checkbox}
-                                    checked={value}
-                                    onChange={(e) => {
-                                        onChange(e.target.checked);
-                                        updatePreviewField('saveAfterDeadline', e.target.checked)
-                                    }}
-                                />
+                                {isMobile && (<div className={s.wrap}>
+                                    <Button text="Перегляд" btnClass="btnLight" handleClick={handlePreviewButtonClick} type='button' />
+                                </div>)}
                             </div>
-                            )}
-                        />
-                        <div className={s.wrap}>
-                            <Button text="Створити" btnClass="btnLight" />
-                        </div>
-                    </form>
-                </div>
-                <div className={s.preview}>
-                    <Todo {...previewData}/>
-                </div>
-                </div>
+                        </form>
+                    </div>
+                {!isMobile && (<div className={s.preview}>
+                    <Todo {...previewData} />
+                </div>)}
+                {isMobile && isShowPreviewInMobile && (<div className={s.previewInMobile}>
+                    <Todo {...previewData} />
+                    <div className={s.btnReturn}>
+                        <Button text="Повернутися" btnClass="btnLight" handleClick={handlePreviewButtonClick} type='button' />
+                    </div>
+                </div>)}
+            </div>
                 {message && (
                     <Message text={`${message}`} onDismiss={resetMessage} type="todo" />
                 )}

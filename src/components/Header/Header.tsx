@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 import { getLogin } from '../../Redux/auth/auth-selectors';
 import UserInfo from '../UserInfo';
 import Text from '../Shared/Text';
@@ -7,6 +8,7 @@ import Text from '../Shared/Text';
 import s from './Header.module.scss';
 
 const Header: React.FC = () => {
+    const isMobile = useMediaQuery({ maxWidth: 767 });
     const isUserLogin = useSelector(getLogin);
 
     const customClassName = (active: boolean) => {
@@ -23,10 +25,10 @@ const Header: React.FC = () => {
                 <div className={s.group}>
                     <div className={s.navigationMenuWrapper}>
                         <NavLink className={customClassName(true)} to="/" end>
-                            Створити завдання
+                            {isMobile ? 'Створити' : 'Створити завдання'}
                         </NavLink>
                         <NavLink className={`${customClassName(false)} ${s.lastLink}`} to="/list">
-                            Список завдань
+                            {isMobile ? 'Список' : 'Список завдань'}
                         </NavLink>
                     </div>
                     <div className={s.authSection}>

@@ -13,14 +13,20 @@
   }
 }
 
-.todosGroupWeek {
+.todosGroup {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 95px;
-}
-.todosGroupSearch {
-  margin-top: 100px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 95px;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 20px;
+  justify-items: center;
+  @include mixins.mq(tablet) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 45px;
+  }
+  @include mixins.mq(desktop) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 95px;
+  }
 }

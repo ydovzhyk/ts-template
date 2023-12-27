@@ -132,20 +132,24 @@ const TodoPreview: React.FC<ITodoPrewievProps> = ({ additionalInfo, dateFrom, da
             </div>
             {showTodo &&
                 <div className={s.todoWindow}>
-                    <button className={s.dismissButton} onClick={openTodo}>
-                        <FontAwesomeIcon icon={faTimes} size="2x" color='white' />
-                    </button>
-                    <Todo {...{ additionalInfo, dateFrom, dateTo, otherMembers, part, subject, saveAfterDeadline, _id }} />
-                    <div className={s.editTodo}>
-                        <Text
-                                text={'Редагувати завдання'}
-                                textClass="title-form-todo"
-                            />
-                        <div
-                            className={s.arrowButton}
-                            onClick={goToEditTodo}
-                        >
-                            <FontAwesomeIcon icon={faWrench} style={{ fontSize: '24px' }} color='black' />
+                    <div className={s.todoPart}>
+                        <button className={s.dismissButton} onClick={openTodo}>
+                            <FontAwesomeIcon icon={faTimes} size="2x" color='white' />
+                        </button>
+                        <Todo {...{ additionalInfo, dateFrom, dateTo, otherMembers, part, subject, saveAfterDeadline, _id }} />
+                        <div className={s.editTodo}>
+                            <div className={s.editTodoGroup}>
+                                <Text
+                                    text={'Редагувати завдання'}
+                                    textClass="title-form-todo-edit"
+                                />
+                                <div
+                                    className={s.arrowButton}
+                                    onClick={goToEditTodo}
+                                >
+                                    <FontAwesomeIcon icon={faWrench} style={{ fontSize: '24px' }} color='black' />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { useAppDispatch } from '../../hooks/hooks';
+import { useMediaQuery } from 'react-responsive';
 import { editTodo } from '../../Redux/todo/todo-operations';
 import { getLogin } from '../../Redux/auth/auth-selectors';
 import { getTodoMessage } from '../../Redux/todo/todo-selectors'
@@ -37,6 +38,8 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
 
     const vpHeight = window.innerHeight;
     const [dynamicStyles, setDynamicStyles] = useState({});
+    const [isShowPreviewInMobile, setIsShowPreviewInMobile] = useState(false);
+    const isMobile = useMediaQuery({ maxWidth: 767 });
 
     const selectedUsersInitial = todoData?.otherMembers ? [todoData.otherMembers] : [];
     const additionalInfoInitial = todoData?.additionalInfo ? todoData.additionalInfo : '';
@@ -188,6 +191,10 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
             navigate('/list');
         }, 10000);
         return () => clearTimeout(timeoutId);
+    };
+
+    const handlePreviewButtonClick = () => {
+        setIsShowPreviewInMobile(!isShowPreviewInMobile);
     };
 
     return (
@@ -362,18 +369,29 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                             </div>
                             )}
                         />
-                        <div className={s.wrap}>
-                            <Button text="Зберегти зміни" btnClass="btnLight" />
+                        <div className={s.btnPart}>
+                            <div className={s.wrap}>
+                                <Button text="Зберегти зміни" btnClass="btnLight" />
+                            </div>
+                                {isMobile && (<div className={s.wrap}>
+                                    <Button text="Перегляд" btnClass="btnLight" handleClick={handlePreviewButtonClick} type='button' />
+                            </div>)}
                         </div>
                     </form>
                 </div>
-                <div className={s.preview}>
-                    <Todo {...previewData}/>
-                </div>
-                </div>
-                {message && (
-                    <Message text={`${message}`} onDismiss={resetMessage} type="todo" />
-                )}
+                {!isMobile && (<div className={s.preview}>
+                    <Todo {...previewData} />
+                </div>)}
+                {isMobile && isShowPreviewInMobile && (<div className={s.previewInMobile}>
+                    <Todo {...previewData} />
+                    <div className={s.btnReturn}>
+                        <Button text="Повернутися" btnClass="btnLight" handleClick={handlePreviewButtonClick} type='button' />
+                    </div>
+                </div>)}
+            </div>
+            {message && (
+                <Message text={`${message}`} onDismiss={resetMessage} type="todo" />
+            )}
         </Container>
     </section>
     );

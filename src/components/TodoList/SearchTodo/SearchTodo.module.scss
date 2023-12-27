@@ -1,10 +1,20 @@
 @use '../../../styles/mixins';
 
 .todoSearchBox {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  row-gap: 0px;
-  column-gap: 95px;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 10px;
+  justify-items: center;
+  @include mixins.mq(tablet) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 0px;
+    column-gap: 205px;
+  }
+  @include mixins.mq(desktop) {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 95px;
+  }
 }
 
 .formSection {
@@ -32,6 +42,12 @@
   &::-webkit-scrollbar-thumb:hover {
     background-color: var(--btn-border-color);
   }
+  @include mixins.mq(tablet) {
+    width: 260px;
+  }
+  @include mixins.mq(desktop) {
+    width: 350px;
+  }
 }
 
 .checkbox {
@@ -46,9 +62,18 @@
   display: flex;
   align-items: center;
   width: 350px;
-  height: 46px;
+  height: 38px;
+  font-weight: 400;
+  font-size: 14px;
   background-color: var(--background-color);
   color: var(--second-text-color);
+  @include mixins.mq(tablet) {
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    height: 46px;
+    font-size: 16px;
+  }
 }
 
 .lastListItem {
@@ -56,13 +81,27 @@
   display: flex;
   align-items: center;
   width: 350px;
-  height: 48px;
+  height: 38px;
+  font-weight: 400;
+  font-size: 14px;
   background-color: var(--background-color);
   color: var(--second-text-color);
+  @include mixins.mq(tablet) {
+    font-size: 15px;
+  }
+  @include mixins.mq(desktop) {
+    height: 46px;
+    font-size: 16px;
+  }
 }
 
-.wrap {
-  position: absolute;
-  top: 220px;
-  left: 0px;
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  @include mixins.mq(desktop) {
+    justify-content: flex-start;
+  }
 }

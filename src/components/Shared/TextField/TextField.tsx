@@ -1,5 +1,6 @@
 import { ChangeEvent, forwardRef, ChangeEventHandler, useState, useEffect, useCallback} from 'react';
 import { FieldError, Control } from 'react-hook-form';
+import { useMediaQuery } from 'react-responsive';
 import { CiSearch } from 'react-icons/ci';
 
 import s from './TextField.module.scss';
@@ -25,7 +26,7 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
   const inputClass = props.className ? `${s.input} ${s[props.className]}` : `${s.input}`;
   const spanClass = props.className ? `${s.span} ${s[props.className]}` : `${s.span}`;
   const clearTextField = props.clearTextField;
-
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
   const [inputValue, setInputValue] = useState<string>(props.value || '');
 
   const [isValue, setIsValue] = useState<boolean>(false);
@@ -95,7 +96,7 @@ const TextField = forwardRef<HTMLInputElement, ITextFieldProps>((props, ref) => 
       />
       {(props.className === 'search' || props.className === 'searchIST') && !isValue &&
         <span className={spanClass}>
-          <CiSearch size={24} style={{ marginRight: '10px', marginLeft: '10px'}}/>
+          <CiSearch size={24} style={{ marginRight: isTablet ? '5px' : '10px', marginLeft: '10px'}}/>
           {props.placeholder}
         </span>
       }

@@ -271,7 +271,7 @@ const SearchTodo: React.FC = () => {
                     </div>
                     )}
                 </div>
-                <div className={s.wrap}>
+                <div className={s.button}>
                     <Button text="Знайти завдання" btnClass="btnLight" />
                 </div>
             </form>
