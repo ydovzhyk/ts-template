@@ -46,9 +46,7 @@ const TodoList: React.FC = () => {
     const searchPage = useSelector(getSearchPage);
     const weekPage = useSelector(getWeekPage);
 
-    const isMobile = useMediaQuery({ maxWidth: 767 });
     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
-    const isDesktop = useMediaQuery({ minWidth: 1280 });
 
     let itemsPerPage = isTablet ? 2 : 3;
     const totalPagesSearch = arrayTodosSearch.length > 0 ? Math.ceil(arrayTodosSearch.length / itemsPerPage) : 0;

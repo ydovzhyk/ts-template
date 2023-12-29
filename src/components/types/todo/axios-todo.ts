@@ -11,3 +11,7 @@ export interface ITodosWeekResponse {
 export interface ITodosSearchResponse {
     arrayTodosSearch: ITodoServer[];
 }
+
+export interface ITodosSynchronizeResponse {
+    message: string,
+}

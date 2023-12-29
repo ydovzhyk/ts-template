@@ -5,6 +5,7 @@ import {
     editTodo,
     getTodosWeek,
     getSearchTodo,
+    synchronizeTodo,
 } from './todo-operations';
 
 import { ITodoState } from '../../components/types/todo/store-todo';
@@ -16,6 +17,7 @@ const initialState: ITodoState = {
   todoList: [],
   arrayTodosWeek: [],
   arrayTodosSearch: [],
+  stopResetMessage: false,
 };
 
 const todo = createSlice({
@@ -33,6 +35,9 @@ const todo = createSlice({
         },
         createMessageConfirmation: (store, action) => {
             store.message = action.payload;
+        },
+        statusStopResetMessage: (store, action) => {
+            store.stopResetMessage = action.payload;
         },
         clearTodoStore: store => {
             store.loading = false;
@@ -109,6 +114,19 @@ const todo = createSlice({
             store.loading = false;
             store.error = action.payload.data?.message || 'Oops, something went wrong, try again';
         });
+        //synchronize Todo
+        builder.addCase(synchronizeTodo.pending, (store) => {
+            store.loading = true;
+            store.error = '';
+        });
+        builder.addCase(synchronizeTodo.fulfilled, (store, action) => {
+            store.loading = false;
+            store.message = action.payload.message;
+        });
+        builder.addCase(synchronizeTodo.rejected, (store, action: any) => {
+            store.loading = false;
+            store.error = action.payload.data?.message || 'Oops, something went wrong, try again';
+        });
     }
 });
 
@@ -123,4 +141,5 @@ export const {
   saveArrayTodosSearch,
   clearArrayTodosSearch,
   clearArrayTodosWeek,
+  statusStopResetMessage,
 } = todo.actions;

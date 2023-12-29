@@ -4,9 +4,13 @@ import { useForm, Controller } from 'react-hook-form';
 import { useMediaQuery } from 'react-responsive';
 import moment, { Moment } from 'moment';
 import { useAppDispatch } from '../../hooks/hooks';
-import { createTodo } from '../../Redux/todo/todo-operations';
+import { searchLocalStoradge } from '../helpers/searchLocalStoradge';
+import { ITodoSearch } from '../types/todo/todo';
+import { createTodo, synchronizeTodo } from '../../Redux/todo/todo-operations';
 import { getLogin } from '../../Redux/auth/auth-selectors';
 import { getTodoMessage } from '../../Redux/todo/todo-selectors'
+import { getStopResetMessage } from '../../Redux/todo/todo-selectors';
+import { statusStopResetMessage } from '../../Redux/todo/todo-slice';
 import { clearTodoMessage, createMessageConfirmation } from '../../Redux/todo/todo-slice';
 import { getEmailList } from '../../Redux/technical/technical-selectors';
 import { getOptionMenu } from '../../Redux/technical/technical-selectors';
@@ -21,7 +25,7 @@ import Todo from '../Todo/Todo';
 import Message from '../Shared/Message';
 import { fields } from '../Shared/TextField/fields'
 import { ITodoCreate } from '../types/todo/todo';
-import { ITodoProps } from '../Todo/Todo'
+import { ITodoProps } from '../Todo/Todo';
 import { FaPlus } from 'react-icons/fa';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,6 +40,7 @@ const CreateTodo: React.FC = () => {
     const arrayUser = useSelector(getEmailList);
     const options = useSelector(getOptionMenu);
     const message = useSelector(getTodoMessage);
+    const stopResetMessage = useSelector(getStopResetMessage);
     const [showUsersList, setShowUsersList] = useState<boolean>(false);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [selectedDateFrom, setSelectedDateFrom] = useState<Moment>(moment());
@@ -51,10 +56,26 @@ const CreateTodo: React.FC = () => {
     }
     const [previewData, setPreviewData] = useState<ITodoProps>(initialState);
     const [isShowPreviewInMobile, setIsShowPreviewInMobile] = useState(false);
+    const [todoToSynchronize, setTodoToSynchronize] = useState<ITodoCreate[]>([]);
 
     const isMobile = useMediaQuery({ maxWidth: 767 });
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
-    const isDesktop = useMediaQuery({ minWidth: 1280 });
+    // const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
+    // const isDesktop = useMediaQuery({ minWidth: 1280 });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (isUserLogin) {
+                const finalData: ITodoSearch = { searchByStatus: '' };
+                const localStoradgeTodo = searchLocalStoradge(finalData);
+                if (localStoradgeTodo && localStoradgeTodo.length > 0) {
+                    setTodoToSynchronize(localStoradgeTodo);
+                    await dispatch(statusStopResetMessage(true));
+                    await dispatch(createMessageConfirmation("You have tasks saved locally on your computer, would you like to synchronize them with the server?"));
+                }
+            }
+        };
+        fetchData();
+    }, [isUserLogin]);
 
     useEffect(() => {
         if (selectedUsers.length > 0) {
@@ -155,15 +176,27 @@ const CreateTodo: React.FC = () => {
     };
 
     const resetMessage = () => {
-        const timeoutId = setTimeout(() => {
-            dispatch(clearTodoMessage());
-        }, 10000);
-        return () => clearTimeout(timeoutId);
+        if (!stopResetMessage) {
+            const timeoutId = setTimeout(() => {
+                dispatch(clearTodoMessage());
+            }, 10000);
+            return () => clearTimeout(timeoutId);
+        }
     };
 
     const handlePreviewButtonClick = () => {
         setIsShowPreviewInMobile(!isShowPreviewInMobile);
     };
+
+    const synchronize = async (choice: true | false) => {
+        if (choice === true) {
+            await dispatch(synchronizeTodo(todoToSynchronize));
+            
+        } else {
+            dispatch(clearTodoMessage());
+            dispatch(statusStopResetMessage(false));
+        }
+    }
 
     return (
     <section className={s.createTodo} style={dynamicStyles}>
@@ -359,7 +392,7 @@ const CreateTodo: React.FC = () => {
                 </div>)}
             </div>
                 {message && (
-                    <Message text={`${message}`} onDismiss={resetMessage} type="todo" />
+                    <Message text={`${message}`} onDismiss={resetMessage} onChoice={synchronize} type="todo" />
                 )}
         </Container>
     </section>

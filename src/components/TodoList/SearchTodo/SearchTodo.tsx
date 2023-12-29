@@ -28,7 +28,7 @@ const SearchTodo: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Moment>(moment());
+    const [selectedDate] = useState<Moment>(moment());
     const options = useSelector(getOptionMenu);
     const isUserLogin = useSelector(getLogin);
     const weekPage = useSelector(getWeekPage);
@@ -117,7 +117,7 @@ const SearchTodo: React.FC = () => {
 
     const handleTextSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
-        const filteredUsers = arrayUser.filter((email) => email.includes(text));
+        const filteredUsers = arrayUser.filter((email: string) => email.includes(text));
         if (arrayUser.length > 0) {
             setFinalListUser(filteredUsers);
         } else {

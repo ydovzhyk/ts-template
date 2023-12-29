@@ -7,4 +7,5 @@ export interface ITodoState {
   todoList: ITodoServer[];
   arrayTodosWeek: ITodoServer[];
   arrayTodosSearch: ITodoServer[];
+  stopResetMessage: boolean;
 }
