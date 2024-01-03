@@ -97,11 +97,9 @@
       position: absolute;
       bottom: 16px + round(math.div(math.div(16px, 1.3333), 3));
     }
-
     &::before {
       left: round(math.div(16px, 1.3333));
     }
-
     &::after {
       right: round(math.div(16px, 1.3333));
     }
