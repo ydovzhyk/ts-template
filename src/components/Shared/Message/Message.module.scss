@@ -8,6 +8,7 @@
   top: calc(100vh / 2 - 160px);
   left: calc(100vw / 2 - 150px);
   width: 300px;
+  min-height: 330px;
   padding: 40px;
   background: var(--bg-footer-header);
   box-shadow: 10px 10px 30px rgba(82, 85, 95, 0.4);

@@ -75,7 +75,7 @@ const CreateTodo: React.FC = () => {
             }
         };
         fetchData();
-    }, [isUserLogin]);
+    }, [isUserLogin, dispatch]);
 
     useEffect(() => {
         if (selectedUsers.length > 0) {
@@ -190,15 +190,18 @@ const CreateTodo: React.FC = () => {
 
     const synchronize = async (choice: true | false) => {
         if (choice === true) {
-            await dispatch(synchronizeTodo(todoToSynchronize));
-            
+            const syncResonse = await dispatch(synchronizeTodo(todoToSynchronize));
+            if (syncResonse && syncResonse.meta.requestStatus === 'fulfilled') {
+                localStorage.setItem('ts-template_tasks', JSON.stringify([]));
+                setTodoToSynchronize([]);
+            }
         } else {
             dispatch(clearTodoMessage());
             dispatch(statusStopResetMessage(false));
         }
-    }
+    };
 
-    return (
+return (
     <section className={s.createTodo} style={dynamicStyles}>
         <Container>
             <div className={s.todoPart}>
@@ -215,7 +218,6 @@ const CreateTodo: React.FC = () => {
                                 render={({ field: { onChange, value }, fieldState }) => (
                                     <SelectField
                                         value={value}
-                                        // handleChange={onChange}
                                         handleChange={(newValue) => {
                                             onChange(newValue);
                                             updatePreviewField('part', newValue);
@@ -241,7 +243,6 @@ const CreateTodo: React.FC = () => {
                                         value={value}
                                         control={control}
                                         className="createTodo"
-                                        // handleChange={onChange}
                                         handleChange={(e) => {
                                             const newValue = e.target.value;
                                             onChange(newValue);
@@ -265,7 +266,6 @@ const CreateTodo: React.FC = () => {
                                         dateFormat="dd.MM.yyyy"
                                         showMonthYearPicker={false}
                                         value={selectedDateFrom.toDate()}
-                                        // handleChange={onChange}
                                         handleChange={(newValue) => {
                                             onChange(newValue);
                                             updatePreviewField('dateFrom', newValue);
@@ -286,7 +286,6 @@ const CreateTodo: React.FC = () => {
                                         dateFormat="dd.MM.yyyy"
                                         showMonthYearPicker={false}
                                         value={selectedDateTo.toDate()}
-                                        // handleChange={onChange}
                                         handleChange={(newValue) => {
                                             onChange(newValue);
                                             updatePreviewField('dateTo', newValue);
@@ -306,7 +305,6 @@ const CreateTodo: React.FC = () => {
                                     <textarea
                                         className={`${s.textarea} ${s.scroll}`}
                                         value={value}
-                                        // onChange={onChange}
                                         onChange={(e) => {
                                             onChange(e.target.value);
                                             updatePreviewField('additionalInfo', e.target.value);
@@ -396,7 +394,7 @@ const CreateTodo: React.FC = () => {
                 )}
         </Container>
     </section>
-    );
+);
 }
 
 export default CreateTodo;

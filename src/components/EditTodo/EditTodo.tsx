@@ -215,8 +215,8 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                             <SelectField
                                 value={value}
                                 handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('part', newValue);
+                                    onChange(newValue);
+                                    updatePreviewField('part', newValue);
                                 }}
                                 name="part"
                                 className="createTodo"
@@ -267,8 +267,8 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                                 showMonthYearPicker={false} 
                                 value={selectedDateFrom.toDate()} 
                                 handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('dateFrom', newValue);
+                                    onChange(newValue);
+                                    updatePreviewField('dateFrom', newValue);
                                 }}
                             />
                             )}
@@ -287,8 +287,8 @@ const EditTodo: React.FC<EditTodoProps> = ({ todoData }) => {
                                 showMonthYearPicker={false} 
                                 value={selectedDateTo.toDate()} 
                                 handleChange={(newValue) => {
-                                onChange(newValue);
-                                updatePreviewField('dateTo', newValue);
+                                    onChange(newValue);
+                                    updatePreviewField('dateTo', newValue);
                                 }}
                             />
                             )}

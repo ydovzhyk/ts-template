@@ -3,8 +3,6 @@ import { ITodoSearch } from "../types/todo/todo"
 export const buildURL = (searchData: ITodoSearch, searchPage?: number, weekPage?: number) => { 
     const urlParams = new URLSearchParams();
 
-    // urlParams.set('type', 'search');
-
     if (searchData.searchByPart) {
         urlParams.set('part', searchData.searchByPart);
     }
@@ -37,6 +35,3 @@ export const buildURL = (searchData: ITodoSearch, searchPage?: number, weekPage?
 
     return finalURL;
 }
-
-// const decodedPart = decodeURIComponent('%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%BE%D0%B1%D1%96%D0%BB%D1%8C');
-// console.log(decodedPart); // Результат: "Автомобіль"
