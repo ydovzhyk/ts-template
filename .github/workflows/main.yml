@@ -20,15 +20,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Update package.json for GitHub Pages
-      #   run: |
-      #     echo "$(jq '.homepage = "https://ydovzhyk.github.io/ts-template"' package.json)" > ./package.json
-      #   working-directory: .
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
+      - name: Update package.json for GitHub Pages
+        run: |
+          echo "$(jq '.homepage = "https://ydovzhyk.github.io/ts-template"' package.json)" > ./package.json
+        working-directory: .
 
       - name: Install dependencies
         run: npm install
